@@ -52,15 +52,16 @@ Get your project up and running quickly with these steps:
      ```
 
    - **DB Scripts Overview:**
+
      - `db:migrate`: Applies `schema.sql` (initial setup, new tables).
      - `db:apply-changes`: Executes `database/adhoc_changes.sql` (backs up DB first).
      - `db:reset`: Wipes and recreates DB from `schema.sql` (backs up DB first).
      - `db:backup`: Manually creates a backup.
        (See "Database Management" section for details).
 
-    - **DB path:**
-     - il comando migrate genererà il nuovo DB nominato 'database\starter_default.db'
-     - DB PATH == 'database\starter_default.db'
+   - **DB path:**
+   - il comando migrate genererà il nuovo DB nominato 'database\starter_default.db'
+   - DB PATH == 'database\starter_default.db'
 
 6. **Run Development Server:**
 

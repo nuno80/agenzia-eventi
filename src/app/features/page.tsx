@@ -6,7 +6,7 @@ export default function Features() {
     <div className="min-h-screen bg-white">
       <Navbar />
       <main className="container py-10">
-        <h1 className="mb-8 text-center text-4xl font-bold text-cyan-color">
+        <h1 className="text-cyan-color mb-8 text-center text-4xl font-bold">
           I Nostri Servizi
         </h1>
 
@@ -26,7 +26,7 @@ export default function Features() {
                 className="h-48 w-full object-cover"
               />
               <div className="p-6">
-                <h3 className="mb-4 text-xl font-bold text-cyan-color">
+                <h3 className="text-cyan-color mb-4 text-xl font-bold">
                   FIERE, MEETING AZIENDALI, CONVENTION, INTERPRETARIATO
                   FIERISTICO
                 </h3>
@@ -50,7 +50,7 @@ export default function Features() {
                 className="h-48 w-full object-cover"
               />
               <div className="p-6">
-                <h3 className="mb-4 text-xl font-bold text-cyan-color">
+                <h3 className="text-cyan-color mb-4 text-xl font-bold">
                   LANCIO DI PRODOTTI, TOUR PROMOZIONALI, ROADSHOW, SAMPLING,
                   DISTRIBUZIONE GADGET
                 </h3>
@@ -74,7 +74,7 @@ export default function Features() {
                 className="h-48 w-full object-cover"
               />
               <div className="p-6">
-                <h3 className="mb-4 text-xl font-bold text-cyan-color">
+                <h3 className="text-cyan-color mb-4 text-xl font-bold">
                   SFILATE, SHOWROOM, FITTING, SHOOTING FOTOGRAFICI, SPOT
                   PUBBLICITARI
                 </h3>
@@ -98,7 +98,7 @@ export default function Features() {
                 className="h-48 w-full object-cover"
               />
               <div className="p-6">
-                <h3 className="mb-4 text-xl font-bold text-cyan-color">
+                <h3 className="text-cyan-color mb-4 text-xl font-bold">
                   CONGRESSI, CONFERENZE, ECM, ATTIVITÀ PROMOZIONALI
                 </h3>
                 <p className="mb-4 text-black">
@@ -123,7 +123,7 @@ export default function Features() {
                 className="h-48 w-full object-cover"
               />
               <div className="p-6">
-                <h3 className="mb-4 text-xl font-bold text-cyan-color">
+                <h3 className="text-cyan-color mb-4 text-xl font-bold">
                   PREMIAZIONI, CENE DI GALA, INAUGURAZIONI
                 </h3>
                 <p className="mb-4 text-black">
@@ -146,7 +146,7 @@ export default function Features() {
                 className="h-48 w-full object-cover"
               />
               <div className="p-6">
-                <h3 className="mb-4 text-xl font-bold text-cyan-color">
+                <h3 className="text-cyan-color mb-4 text-xl font-bold">
                   EVENTI: AZIENDALI, SPORTIVI, TEATRALI, FASHION
                 </h3>
                 <p className="mb-4 text-black">

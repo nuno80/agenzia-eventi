@@ -6,7 +6,7 @@ export default function Pricing() {
     <div className="min-h-screen bg-white">
       <Navbar />
       <main className="container py-10">
-        <h1 className="mb-8 text-center text-4xl font-bold text-cyan-color">
+        <h1 className="text-cyan-color mb-8 text-center text-4xl font-bold">
           Contattaci per un Preventivo
         </h1>
 
@@ -151,7 +151,7 @@ export default function Pricing() {
               <div className="text-center">
                 <Button
                   type="submit"
-                  className="bg-cyan-color px-8 py-3 text-lg text-teal-color hover:bg-cyan-600"
+                  className="bg-cyan-color text-teal-color px-8 py-3 text-lg hover:bg-cyan-600"
                 >
                   Invia Richiesta
                 </Button>
@@ -160,22 +160,28 @@ export default function Pricing() {
           </div>
 
           <div className="mt-12 text-center">
-            <h2 className="mb-6 text-2xl font-bold text-cyan-color">
+            <h2 className="text-cyan-color mb-6 text-2xl font-bold">
               Informazioni di Contatto
             </h2>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <div className="rounded-lg bg-white p-6 shadow-md">
-                <h3 className="mb-2 text-xl font-semibold text-cyan-color">E-MAIL</h3>
+                <h3 className="text-cyan-color mb-2 text-xl font-semibold">
+                  E-MAIL
+                </h3>
                 <p className="text-blue-600">info@nuovaagenzia.it</p>
               </div>
 
               <div className="rounded-lg bg-white p-6 shadow-md">
-                <h3 className="mb-2 text-xl font-semibold text-cyan-color">TELEFONO</h3>
+                <h3 className="text-cyan-color mb-2 text-xl font-semibold">
+                  TELEFONO
+                </h3>
                 <p className="text-blue-600">+39 02 123 4567</p>
               </div>
 
               <div className="rounded-lg bg-white p-6 shadow-md">
-                <h3 className="mb-2 text-xl font-semibold text-cyan-color">INDIRIZZO</h3>
+                <h3 className="text-cyan-color mb-2 text-xl font-semibold">
+                  INDIRIZZO
+                </h3>
                 <p className="text-black">
                   Via Roma, 10
                   <br />

@@ -4,12 +4,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import {
-    SignInButton,
-    SignUpButton,
-    SignedIn,
-    SignedOut,
-    UserButton,
-    useUser,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+  useUser,
 } from "@clerk/nextjs";
 import { Menu, X } from "lucide-react";
 
@@ -95,16 +95,16 @@ export function Navbar() {
           <div className="flex items-center gap-4">
             <SignedOut>
               <SignInButton mode="modal">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   className="text-sm font-medium text-black hover:text-cyan"
                 >
                   Sign In
                 </Button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   className="text-sm font-medium text-black hover:text-cyan"
                 >
                   Sign Up
@@ -188,16 +188,16 @@ export function Navbar() {
             )}
             <SignedOut>
               <SignInButton mode="modal">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   className="w-full justify-start text-sm font-medium text-black hover:text-cyan"
                 >
                   Sign In
                 </Button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   className="w-full justify-start text-sm font-medium text-black hover:text-cyan"
                 >
                   Sign Up

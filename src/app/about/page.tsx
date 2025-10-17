@@ -5,7 +5,9 @@ export default function About() {
     <div className="min-h-screen bg-white">
       <Navbar />
       <main className="container py-10">
-        <h1 className="mb-8 text-center text-4xl font-bold text-cyan-color">Chi Siamo</h1>
+        <h1 className="text-cyan-color mb-8 text-center text-4xl font-bold">
+          Chi Siamo
+        </h1>
 
         <div className="mx-auto max-w-4xl">
           <p className="mb-6 text-lg text-black">
@@ -19,11 +21,15 @@ export default function About() {
             Milano e nelle principali città italiane ed europee.
           </p>
 
-          <h2 className="mb-6 mt-12 text-2xl font-bold text-cyan-color">I Nostri Valori</h2>
+          <h2 className="text-cyan-color mb-6 mt-12 text-2xl font-bold">
+            I Nostri Valori
+          </h2>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div>
-              <h3 className="mb-4 text-xl font-semibold text-cyan-color">SERIETÀ</h3>
+              <h3 className="text-cyan-color mb-4 text-xl font-semibold">
+                SERIETÀ
+              </h3>
               <p className="text-black">
                 La serietà è uno dei nostri principi fondamentali. Ogni progetto
                 viene affrontato con la massima attenzione ai dettagli e con un
@@ -32,7 +38,9 @@ export default function About() {
             </div>
 
             <div>
-              <h3 className="mb-4 text-xl font-semibold text-cyan-color">CORTESIA</h3>
+              <h3 className="text-cyan-color mb-4 text-xl font-semibold">
+                CORTESIA
+              </h3>
               <p className="text-black">
                 La cortesia nei confronti di clienti, collaboratori e partners è
                 una priorità che caratterizza ogni nostro rapporto.
@@ -40,7 +48,9 @@ export default function About() {
             </div>
 
             <div>
-              <h3 className="mb-4 text-xl font-semibold text-cyan-color">DISPONIBILITÀ</h3>
+              <h3 className="text-cyan-color mb-4 text-xl font-semibold">
+                DISPONIBILITÀ
+              </h3>
               <p className="text-black">
                 Siamo disponibili 24/7 per rispondere a qualsiasi esigenza,
                 garantendo un servizio sempre attento e reattivo.
@@ -48,7 +58,9 @@ export default function About() {
             </div>
 
             <div>
-              <h3 className="mb-4 text-xl font-semibold text-cyan-color">PROFESSIONALITÀ</h3>
+              <h3 className="text-cyan-color mb-4 text-xl font-semibold">
+                PROFESSIONALITÀ
+              </h3>
               <p className="text-black">
                 La professionalit├á del nostro team ├¿ il risultato di una
                 continua formazione e di un&#39;esperienza consolidata nel
@@ -57,7 +69,9 @@ export default function About() {
             </div>
           </div>
 
-          <h2 className="mb-6 mt-12 text-2xl font-bold text-cyan-color">La Nostra Storia</h2>
+          <h2 className="text-cyan-color mb-6 mt-12 text-2xl font-bold">
+            La Nostra Storia
+          </h2>
 
           <p className="mb-6 text-lg text-black">
             Fondata da professionisti con anni di esperienza nel settore degli

@@ -1,17 +1,17 @@
-import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { currentUser } from "@clerk/nextjs/server";
 import { Activity, BarChart, DollarSign, Users } from "lucide-react";
 
 export default async function AdminPage() {
   const user = await currentUser();
-  
+
   // Redirect to sign in if not authenticated
   if (!user) {
     redirect("/sign-in");
   }
-  
+
   // Check if user is admin
   const isAdmin = user?.publicMetadata?.role === "admin";
   if (!isAdmin) {
@@ -99,7 +99,7 @@ export default async function AdminPage() {
 
       {/* Navigation Cards */}
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Link 
+        <Link
           href="/admin/users"
           className="rounded-lg border border-gray-200 bg-white p-6 shadow-md transition hover:shadow-lg"
         >
@@ -111,7 +111,7 @@ export default async function AdminPage() {
             Visualizza e gestisci tutti gli utenti registrati sulla piattaforma.
           </p>
         </Link>
-        
+
         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-md">
           <div className="flex items-center">
             <BarChart className="h-8 w-8 text-green-500" />
@@ -121,7 +121,7 @@ export default async function AdminPage() {
             Analizza le metriche e le performance del tuo sito.
           </p>
         </div>
-        
+
         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-md">
           <div className="flex items-center">
             <Activity className="h-8 w-8 text-purple-500" />

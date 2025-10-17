@@ -6,7 +6,7 @@ export default function Referenze() {
     <div className="min-h-screen bg-white">
       <Navbar />
       <main className="container py-10">
-        <h1 className="mb-8 text-center text-4xl font-bold text-cyan-color">
+        <h1 className="text-cyan-color mb-8 text-center text-4xl font-bold">
           Le Nostre Referenze
         </h1>
 
@@ -20,7 +20,7 @@ export default function Referenze() {
           <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2">
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
               <div className="p-6">
-                <h3 className="mb-4 text-xl font-bold text-cyan-color">
+                <h3 className="text-cyan-color mb-4 text-xl font-bold">
                   Fiera Internazionale del Mobile
                 </h3>
                 <p className="mb-4 text-black">
@@ -33,7 +33,7 @@ export default function Referenze() {
 
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
               <div className="p-6">
-                <h3 className="mb-4 text-xl font-bold text-cyan-color">
+                <h3 className="text-cyan-color mb-4 text-xl font-bold">
                   Lancio Prodotto Tech
                 </h3>
                 <p className="mb-4 text-black">
@@ -46,7 +46,7 @@ export default function Referenze() {
 
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
               <div className="p-6">
-                <h3 className="mb-4 text-xl font-bold text-cyan-color">
+                <h3 className="text-cyan-color mb-4 text-xl font-bold">
                   Sfilata Alta Moda
                 </h3>
                 <p className="mb-4 text-black">
@@ -59,7 +59,7 @@ export default function Referenze() {
 
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md">
               <div className="p-6">
-                <h3 className="mb-4 text-xl font-bold text-cyan-color">
+                <h3 className="text-cyan-color mb-4 text-xl font-bold">
                   Congresso Medico
                 </h3>
                 <p className="mb-4 text-black">
@@ -72,7 +72,9 @@ export default function Referenze() {
           </div>
 
           <div className="mb-12 text-center">
-            <h2 className="mb-6 text-2xl font-bold text-cyan-color">Clienti Soddisfatti</h2>
+            <h2 className="text-cyan-color mb-6 text-2xl font-bold">
+              Clienti Soddisfatti
+            </h2>
             <p className="mb-8 text-lg text-black">
               La nostra professionalit&#224; e dedizione hanno portato alla
               collaborazione con aziende leader nei loro settori. Ecco alcuni
@@ -96,7 +98,7 @@ export default function Referenze() {
           </div>
 
           <div className="rounded-lg bg-blue-50 p-8">
-            <h2 className="mb-6 text-center text-2xl font-bold text-cyan-color">
+            <h2 className="text-cyan-color mb-6 text-center text-2xl font-bold">
               Diventa una nostra referenza
             </h2>
             <p className="mb-6 text-center text-lg text-black">
@@ -104,7 +106,7 @@ export default function Referenze() {
               saremmo felici di includerti tra le nostre referenze.
             </p>
             <div className="text-center">
-              <Button className="bg-cyan-color px-8 py-3 text-teal-color hover:bg-cyan-600">
+              <Button className="bg-cyan-color text-teal-color px-8 py-3 hover:bg-cyan-600">
                 Contattaci per una testimonianza
               </Button>
             </div>

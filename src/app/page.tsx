@@ -27,10 +27,10 @@ export default function Home() {
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-first-color md:text-4xl">
+            <h2 className="text-first-color mb-4 text-3xl font-bold md:text-4xl">
               di cosa ci occupiamo
             </h2>
-            <h3 className="text-xl font-semibold text-second-color md:text-2xl">
+            <h3 className="text-second-color text-xl font-semibold md:text-2xl">
               Siamo specializzati in accoglienza e promozione
             </h3>
           </div>
@@ -90,7 +90,7 @@ export default function Home() {
           </div>
 
           <div className="text-center">
-            <Button className="bg-cyan-color px-8 py-3 text-lg text-teal-color hover:bg-cyan-600">
+            <Button className="bg-cyan-color text-teal-color px-8 py-3 text-lg hover:bg-cyan-600">
               Leggi di più sulla nostra storia e sulle nostre modalità
               operative.
             </Button>
@@ -103,7 +103,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
             <div>
-              <h2 className="mb-6 text-3xl font-bold text-first-color md:text-4xl">
+              <h2 className="text-first-color mb-6 text-3xl font-bold md:text-4xl">
                 I NOSTRI VALORI
               </h2>
               <div className="space-y-4">
@@ -141,7 +141,7 @@ export default function Home() {
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-first-color md:text-4xl">
+            <h2 className="text-first-color mb-4 text-3xl font-bold md:text-4xl">
               I NOSTRI SERVIZI
             </h2>
             <p className="mx-auto max-w-3xl text-xl text-gray-700">
@@ -273,14 +273,14 @@ export default function Home() {
       <section id="contatti" className="bg-gray-900 py-16 text-white">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-first-color md:text-4xl">
+            <h2 className="text-first-color mb-4 text-3xl font-bold md:text-4xl">
               Contattaci e saremo lieti di aiutare la tua azienda
             </h2>
           </div>
 
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
             <div>
-              <h2 className="mb-6 text-2xl font-bold text-second-color">
+              <h2 className="text-second-color mb-6 text-2xl font-bold">
                 LAVORIAMO PER IL TUO SUCCESSO
               </h2>
               <img
@@ -288,7 +288,7 @@ export default function Home() {
                 alt="Nuova agenzia Logo"
                 className="mb-6 max-w-md"
               />
-              <h3 className="mb-6 text-center text-xl font-semibold text-second-color">
+              <h3 className="text-second-color mb-6 text-center text-xl font-semibold">
                 Siamo disponibili 24/7 per aiutare la tua impresa
               </h3>
               <p className="mb-6 text-center text-lg">
@@ -297,7 +297,7 @@ export default function Home() {
               <p className="mb-6 text-center text-gray-300">
                 | Privacy Policy | Via Milano, 1/25, 20081 Abbiategrasso MI
               </p>
-              <h2 className="mb-6 text-center text-2xl font-bold text-second-color">
+              <h2 className="text-second-color mb-6 text-center text-2xl font-bold">
                 Seguici sui principali social!
               </h2>
               <div className="mb-8 flex justify-center space-x-6">
@@ -332,13 +332,13 @@ export default function Home() {
                   </svg>
                 </Link>
               </div>
-              <Button className="w-full bg-cyan-color py-3 text-teal-color hover:bg-cyan-600">
+              <Button className="bg-cyan-color text-teal-color w-full py-3 hover:bg-cyan-600">
                 Desideri lavorare con noi? Contattaci subito!
               </Button>
             </div>
 
             <div className="rounded-lg bg-gray-800 p-8">
-              <h2 className="mb-6 text-center text-2xl font-bold text-second-color">
+              <h2 className="text-second-color mb-6 text-center text-2xl font-bold">
                 Scrivici per un preventivo!
               </h2>
               <form className="space-y-4">
@@ -451,7 +451,7 @@ export default function Home() {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-cyan-color py-3 text-teal-color hover:bg-cyan-600"
+                  className="bg-cyan-color text-teal-color w-full py-3 hover:bg-cyan-600"
                 >
                   Invia
                 </Button>

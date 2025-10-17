@@ -28,6 +28,8 @@ const isAuthenticatedRoute = createRouteMatcher(["/features(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId, sessionClaims } = await auth();
+  
+  
 
   // Per debug, puoi decommentare le seguenti righe per vedere i log
   //console.log("\n--- CLERK MIDDLEWARE DEBUG ---");
@@ -35,14 +37,11 @@ export default clerkMiddleware(async (auth, req) => {
   //console.log(`[AUTH] User ID: ${userId}`);
 
   if (isPublicRoute(req)) {
-    console.log(`[DECISION] Public route. Allowing for ${req.url}.`);
     return NextResponse.next();
   }
 
   if (!userId) {
-    console.log("[DECISION] User not authenticated.");
     if (req.url.startsWith("/api")) {
-      console.log("[ACTION] Returning 401 for API request.");
       return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { "Content-Type": "application/json" },
@@ -53,74 +52,20 @@ export default clerkMiddleware(async (auth, req) => {
       "redirect_url",
       req.nextUrl.pathname + req.nextUrl.search
     );
-    console.log(`[ACTION] Redirecting to sign-in: ${signInUrl.toString()}`);
     return NextResponse.redirect(signInUrl);
   }
 
-  console.log(`[AUTH] User ${userId} is authenticated.`);
-
+  // Check admin routes - se sessionClaims non ha i metadati, permettiamo passare alla pagina
+  // e la pagina stessa farà il controllo con currentUser() che ha accesso a publicMetadata
   if (isAdminRoute(req)) {
-    console.log(
-      `[ROUTE] Admin route matched for ${req.url}. Checking admin role for user ${userId}.`
-    );
-
-    let userIsAdmin = false;
-    let roleSource = "none";
-
-    if (sessionClaims) {
-      if (sessionClaims.metadata?.role === "admin") {
-        userIsAdmin = true;
-        roleSource = "sessionClaims.metadata.role";
-      } else if (sessionClaims.publicMetadata?.role === "admin") {
-        userIsAdmin = true;
-        roleSource = "sessionClaims.publicMetadata.role (camelCase)";
-      } else {
-        const snakeCasePublicMeta = sessionClaims["public_metadata"] as
-          | { role?: AppRole }
-          | undefined;
-        if (snakeCasePublicMeta?.role === "admin") {
-          userIsAdmin = true;
-          roleSource = "sessionClaims['public_metadata'].role (snake_case)";
-        }
-      }
-    }
-
-    console.log(
-      `[AUTH] Role source for admin check: ${roleSource}. Role found: ${userIsAdmin ? "admin" : "not admin or not found"}`
-    );
-    console.log(`[AUTH] Result of userIsAdmin check: ${userIsAdmin}`);
-
-    if (userIsAdmin) {
-      console.log("[DECISION] Admin access GRANTED.");
-      return NextResponse.next();
-    } else {
-      console.log("[DECISION] Admin access DENIED. User is not admin.");
-      if (req.url.startsWith("/api")) {
-        console.log("[ACTION] Returning 403 for API admin request.");
-        return new NextResponse(
-          JSON.stringify({ error: "Forbidden: Admin role required" }),
-          {
-            status: 403,
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-      }
-      const noAccessUrl = new URL("/no-access", req.url);
-      console.log("[ACTION] Redirecting to /no-access.");
-      return NextResponse.redirect(noAccessUrl);
-    }
-  }
-
-  if (isAuthenticatedRoute(req)) {
-    console.log(
-      `[ROUTE] Authenticated (non-admin) route matched for ${req.url}. Access GRANTED for user ${userId}.`
-    );
+    // Per semplicità e affidabilità, lasciamo che la pagina stessa faccia il controllo admin
+    // usando currentUser() che ha accesso completo a publicMetadata
     return NextResponse.next();
   }
 
-  console.log(
-    `[ROUTE] Unspecified protected route for ${req.url}. Allowing access for authenticated user ${userId}.`
-  );
+  if (isAuthenticatedRoute(req)) {
+    return NextResponse.next();
+  }
   return NextResponse.next();
 });
 

@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-// import { useUser } from "@clerk/nextjs"; // RIMOSSO
-
 interface User {
   id: string;
   primaryEmailAddress?: { emailAddress: string }; // Adattato alla struttura tipica di Clerk
