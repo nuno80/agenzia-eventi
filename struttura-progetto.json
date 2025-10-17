@@ -1,0 +1,230 @@
+{
+  "projectName": "Event Manager App",
+  "lastUpdated": "2025-10-17T20:45:00Z",
+  "summary": {
+    "totalFiles": 53,
+    "totalLines": 6465,
+    "byType": {
+      "tsx": 34,
+      "ts": 19,
+      "json": 5,
+      "sql": 2,
+      "js": 1,
+      "mjs": 1
+    }
+  },
+  "structure": {
+    "src": {
+      "path": "src/",
+      "files": 53,
+      "lines": 6465,
+      "directories": {
+        "app": {
+          "path": "src/app/",
+          "files": 15,
+          "description": "Next.js App Router pages e layout",
+          "subdirs": {
+            "(auth)": {
+              "files": [
+                {
+                  "name": "layout.tsx",
+                  "size": 245,
+                  "lines": 8,
+                  "lastModified": "2025-10-17T20:00:00Z",
+                  "description": "Layout per authenticated pages"
+                }
+              ],
+              "description": "Authenticated route group"
+            },
+            "admin": {
+              "files": 6,
+              "description": "Admin functionality pages",
+              "subdirs": {
+                "events": {
+                  "files": 3,
+                  "description": "Event management pages",
+                  "contents": ["page.tsx (list events)", "create/page.tsx (event creation)", "[id]/page.tsx (event details)"]
+                }
+              }
+            },
+            "api": {
+              "files": 2,
+              "description": "API routes for admin functions",
+              "subdirs": {
+                "admin": {
+                  "files": 2,
+                  "contents": ["get-users/route.ts", "set-user-role/route.ts"]
+                }
+              }
+            }
+          },
+          "pages": [
+            {
+              "name": "page.tsx",
+              "description": "Homepage",
+              "lastModified": "2025-10-17T20:00:00Z"
+            },
+            {
+              "name": "layout.tsx", 
+              "description": "Root layout providers",
+              "lastModified": "2025-10-17T20:00:00Z"
+            },
+            {
+              "name": "about/page.tsx",
+              "description": "About page"
+            },
+            {
+              "name": "dashboard/page.tsx",
+              "description": "Main user dashboard",
+              "lastModified": "2025-10-17T20:45:00Z"
+            },
+            {
+              "name": "admin/page.tsx",
+              "description": "Admin dashboard"
+            }
+          ]
+        },
+        "components": {
+          "path": "src/components/",
+          "files": 4,
+          "description": "React components",
+          "subdirs": {
+            "ui": {
+              "files": 12,
+              "description": "Shadcn/UI components",
+              "vendor": "shadcn/ui",
+              "contents": ["button.tsx", "card.tsx", "form.tsx", "input.tsx", "label.tsx", "select.tsx", "textarea.tsx", "badge.tsx", "table.tsx", "dropdown-menu.tsx"]
+            },
+            "events": {
+              "files": 1,
+              "description": "Event-specific components",
+              "contents": ["create-event-form.tsx"]
+            }
+          }
+        },
+        "actions": {
+          "path": "src/actions/",
+          "files": 2,
+          "description": "Server Actions (API layer)",
+          "contents": ["event-actions.ts (main event operations)", "session-actions.ts (session management)"]
+        },
+        "lib": {
+          "path": "src/lib/",
+          "files": 8,
+          "description": "Utilities and configurations",
+          "subdirs": {
+            "db": {
+              "files": 8,
+              "description": "Database layer and migrations",
+              "contents": ["index.ts (DB connection)", "migrate.ts (schema migration)", "reset.ts (DB reset)", "utils.ts"]
+            }
+          },
+          "contents": ["schema.ts", "utils.ts", "schema.test.ts"]
+        },
+        "types": {
+          "path": "src/types/",
+          "files": 2,
+          "description": "TypeScript definitions",
+          "contents": ["globals.d.ts (global types)", "css.d.ts (CSS types)"]
+        },
+        "hooks": {
+          "path": "src/hooks/",
+          "files": 1,
+          "description": "React hooks",
+          "contents": ["use-mobile.ts"]
+        }
+      }
+    },
+    "database": {
+      "path": "database/",
+      "files": 5,
+      "description": "Database schema and migrations",
+      "contents": [
+        {
+          "name": "schema.sql",
+          "size": 7185,
+          "lines": 172,
+          "lastModified": "2025-10-17T20:30:00Z",
+          "description": "Complete database schema with tables, indexes, triggers",
+          "tables": ["users", "events", "sessions", "participants", "event_admins", "event_budgets", "event_announcements", "travel_reimbursements", "analytics_snapshots"]
+        },
+        {
+          "name": "starter_default.db",
+          "gitignored": true,
+          "description": "Local SQLite database (development only)"
+        },
+        {
+          "name": "adhoc_changes.sql",
+          "description": "Temporary scratchpad for ALTER/UPDATE queries"
+        },
+        {
+          "name": "backups/",
+          "gitignored": true,
+          "description": "Timestamped backups directory",
+          "contents": ["starter_default.db.pre-reset.backup_*"]
+        }
+      ]
+    },
+    "config": {
+      "path": "root/",
+      "files": 8,
+      "description": "Project configuration files",
+      "contents": [
+        ".env.local.example", "tsconfig.json", "next.config.mjs", 
+        ".eslintrc.json", ".prettierrc.json", "tailwind.config.ts", 
+        "components.json", "globals.css"
+      ]
+    },
+    "_blueprints": {
+      "path": "_blueprints/",
+      "files": 1,
+      "description": "Project blueprints and task management",
+      "contents": [
+        {
+          "name": "state/tasks.json",
+          "description": "Sprint planning and task tracking"
+        }
+      ]
+    }
+  },
+  "codingStandards": {
+    "namingConventions": {
+      "components": "PascalCase (tsx)",
+      "utils": "camelCase (ts)",
+      "folders": "kebab-case",
+      "types": "PascalCase"
+    },
+    "maxFileLines": 500,
+    "maxFunctionLines": 50,
+    "maxClassLines": 100,
+    "maxLineLength": 80
+  },
+  "dependencies": {
+    "critical": [
+      "react@19",
+      "next@15-canary", 
+      "typescript@5",
+      "@clerk/nextjs@latest",
+      "better-sqlite3@latest",
+      "tailwindcss@latest"
+    ],
+    "ui": [
+      "@radix-ui/react-*",
+      "shadcn/ui",
+      "lucide-react"
+    ],
+    "validation": [
+      "zod",
+      "@hookform/resolvers",
+      "react-hook-form"
+    ]
+  },
+  "architecture": {
+    "pattern": "Server-First with PPR",
+    "database": "SQLite via better-sqlite3",
+    "auth": "Clerk with server-side validation",
+    "styling": "Tailwind CSS + Shadcn/UI",
+    "dataLayer": "Server Actions with Zod validation",
+    "routing": "Next.js 15 App Router"
+  }
+}

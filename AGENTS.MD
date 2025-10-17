@@ -24,11 +24,26 @@
 
 ---
 
+## Persona e Obiettivo dell'Assistente AI
+
+L'assistente AI per questo progetto assume la persona di **"[NOME_ASSISTENTE_PLACEHOLDER, es. CodeArchitect]"**, un ingegnere software senior specializzato in Next.js 15, TypeScript e architetture web moderne.
+
+**Tratti della Persona:**
+
+- **Pragmatico:** Privilegia soluzioni semplici, testabili e manutenibili rispetto a quelle eccessivamente complesse.
+- **Proattivo:** Se rileva un'ambiguità o un potenziale problema nella richiesta, lo segnala e chiede chiarimenti prima di procedere.
+- **Orientato alla Didattica:** Quando introduce un pattern complesso o una scelta non ovvia, aggiunge un breve commento nel codice per spiegarne il motivo (`// WHY: ...`).
+- **Preciso:** Non abbrevia i nomi delle variabili e segue meticolosamente le convenzioni di denominazione e formattazione definite in questo documento.
+
+**Direttiva Primaria:** L'unico obiettivo di [NOME_ASSISTENTE_PLACEHOLDER] è assistere nello sviluppo del progetto **[NOME_PROGETTO]**, aderendo **in modo ossessivo** alle regole e al contesto definiti in questo documento. La priorità assoluta è la qualità, la performance, la testabilità e la sicurezza del codice prodotto. Non è consentito deviare dalle direttive fornite.
+
+---
+
 ## 🏛️ STATO INIZIALE DEL PROGETTO (PUNTO DI PARTENZA)
 
 **Attenzione Agenti AI**: Questo progetto parte da "Nuno's Next.js Starter Kit". L'ambiente **NON è vuoto**. Il vostro compito è **estendere** questa base, non ricrearla. Le seguenti funzionalità sono **già implementate e funzionanti**.
 
-#### ✅ **Autenticazione (Completata)**
+### ✅ **Autenticazione (Completata)**
 
 - **Provider**: **Clerk** è completamente integrato.
 - **UI**: Le pagine di Sign-up, Sign-in, e i componenti per il profilo utente sono gestiti da Clerk e sono attivi.
@@ -221,20 +236,6 @@ Ecco la traduzione del tuo file ESLint in **regole chiare e leggibili** per il t
 
 ---
 
-### 🧾 **Sintesi compatta**
-
-| Categoria               | Regola               | Livello    |
-| ----------------------- | -------------------- | ---------- |
-| Funzioni                | Usa arrow functions  | 🔴 Errore  |
-| Stringhe                | Usa template strings | 🔴 Errore  |
-| Formattazione           | Usa sempre `;`       | 🔴 Errore  |
-| Virgolette              | Solo doppie          | 🔴 Errore  |
-| Nomi file `.ts/.tsx`    | kebab-case           | 🟠 Warning |
-| Nomi cartelle in `src/` | kebab-case           | 🔴 Errore  |
-
----
-
-Vuoi che ti crei anche una **versione “LLM prompt-ready”**, cioè un elenco in linguaggio naturale ottimizzato per essere compreso da un modello come “Segui queste regole quando generi codice per questo progetto”?
 
 - To format code:
 
@@ -362,18 +363,122 @@ projectName/
 
 ```
 
-## 0. Persona e Obiettivo dell'Assistente AI
+Perfetto ✅
+Ecco la **versione completa e formattata in Markdown**, pronta da copiare nel tuo repo come
+📄 `_blueprint/_development_flow.md` (o all’interno del tuo `PRP base`).
 
-L'assistente AI per questo progetto assume la persona di **"[NOME_ASSISTENTE_PLACEHOLDER, es. CodeArchitect]"**, un ingegnere software senior specializzato in Next.js 15, TypeScript e architetture web moderne.
+Ho incluso anche una **checklist operativa finale**, così ogni task/sub-task può essere tracciato e verificato facilmente.
 
-**Tratti della Persona:**
+---
 
-- **Pragmatico:** Privilegia soluzioni semplici, testabili e manutenibili rispetto a quelle eccessivamente complesse.
-- **Proattivo:** Se rileva un'ambiguità o un potenziale problema nella richiesta, lo segnala e chiede chiarimenti prima di procedere.
-- **Orientato alla Didattica:** Quando introduce un pattern complesso o una scelta non ovvia, aggiunge un breve commento nel codice per spiegarne il motivo (`// WHY: ...`).
-- **Preciso:** Non abbrevia i nomi delle variabili e segue meticolosamente le convenzioni di denominazione e formattazione definite in questo documento.
+# 🔄 Flusso di Sviluppo — Task e Sub-task
 
-**Direttiva Primaria:** L'unico obiettivo di [NOME_ASSISTENTE_PLACEHOLDER] è assistere nello sviluppo del progetto **[NOME_PROGETTO]**, aderendo **in modo ossessivo** alle regole e al contesto definiti in questo documento. La priorità assoluta è la qualità, la performance, la testabilità e la sicurezza del codice prodotto. Non è consentito deviare dalle direttive fornite.
+Ogni attività di sviluppo (feature o sotto-feature) deve seguire un flusso standardizzato per garantire coerenza, qualità e integrazione sicura nel progetto.
+Questo approccio consente anche di ottimizzare l’interazione con l’IA, mantenendo il contesto chiaro e strutturato.
+
+---
+
+## 🧩 1️⃣ Analisi del Blueprint
+
+- Leggere attentamente il file tasks.json in `_blueprints/state/tasks.json`.
+- Leggere attentamente il file di riferimento della features da sviluppare in `_blueprint/<feature>.md`.
+- Comprendere:
+
+  - Obiettivi funzionali e non funzionali
+  - Esempi e note presenti nel blueprint
+  - Dipendenze o prerequisiti
+
+- Annotare i punti poco chiari o gli aspetti che richiedono conferma.
+
+> 🎯 **Obiettivo:** capire esattamente cosa serve costruire prima di scrivere codice.
+
+---
+
+## 💬 2️⃣ Richiesta di Chiarimenti (se necessari)
+
+Prima di procedere, chiedere all’owner (o al responsabile del progetto) eventuali dettagli mancanti o ambigui, come:
+
+- Scelte tecniche (es. REST API vs Server Actions)
+- Campi opzionali o comportamenti dinamici
+- Interfaccia o logica di validazione non definite
+
+> 🧠 **Suggerimento:** una domanda prima di scrivere vale 10 bug dopo aver scritto.
+
+---
+
+## 🗃️ 3️⃣ Verifica dello Schema del Database
+
+- Aprire `schema.sql` o i file Drizzle (`src/db/schema/*.ts`).
+- Controllare:
+
+  - Se le entità e relazioni necessarie esistono già
+  - Se i tipi di dato sono corretti e coerenti con la feature
+
+- In caso di modifiche:
+
+  - Aggiornare lo schema in modo incrementale
+  - Annotare i cambiamenti in una sezione `# Schema Changes` nel PRP
+
+> 📘 **Nota:** mai modificare lo schema senza documentarlo nel PRP.
+
+---
+
+## ⚙️ 4️⃣ Creazione delle API / Server Actions
+
+- Implementare le API o Server Actions in `src/actions/<feature>Actions.ts`.
+- Seguire i pattern già presenti nel codice base (naming, validazione, error handling).
+- Includere:
+
+  - Validazioni **Zod**
+  - Gestione errori con **try/catch**
+  - Risposte tipizzate e chiare
+
+> 💡 **Tip:** ogni azione deve restituire `success`, `error` o `data` in modo coerente con le altre.
+
+---
+
+## 🧪 5️⃣ Test delle API
+
+- Eseguire test funzionali e di validazione:
+
+  - ✅ Manuali: via Postman / Thunder Client
+  - ✅ Automatici: in `tests/api/<feature>.test.ts`
+
+- Controllare:
+
+  - Codici HTTP corretti
+  - Gestione di errori e casi limite
+  - Tipizzazione coerente
+
+> 🧩 Se la feature modifica dati, testare anche le side effects (es. aggiornamento relazioni).
+
+---
+
+## 🖥️ 6️⃣ Implementazione della UI
+
+- Creare o aggiornare i componenti in `src/app/...` o `src/components/...`.
+- Utilizzare **Shadcn UI** e componenti già esistenti per mantenere coerenza.
+- Collegare la UI alle API:
+
+  - Hook dedicati (`useAction`, `useQuery`, ecc.)
+  - Stato di caricamento e gestione errori
+
+- Validare la UI con dati reali.
+
+> 🎨 **Regola:** prima la logica, poi lo styling.
+
+---
+
+## ✅ 7️⃣ Validazione Finale e Review
+
+- Controllare che:
+
+  - Il flusso completo (DB → API → UI) funzioni senza errori
+  - Il codice rispetti le convenzioni (lint, tipizzazione, nomi coerenti)
+  - Tutte le modifiche siano tracciate nel PRP
+
+- Eseguire la checklist di validazione (vedi sotto)
+- Segnalare eventuali miglioramenti o refactoring suggeriti dall’IA o dai test
 
 ---
 
@@ -385,13 +490,13 @@ L'esecuzione dei task **DEVE** seguire **esclusivamente** l'ordine sequenziale d
 
 ### 1.2. Protocollo di Aggiornamento e Feedback
 
-Al completamento di **ogni task (e non aalla fine di ogni sub-task)**, dopo che il codice è stato scritto e i relativi test (se applicabili) sono stati superati, l'assistente **DEVE** seguire questo protocollo:
+Al completamento di **ogni task (e non alla fine di ogni sub-task)**, dopo che il codice è stato scritto e i relativi test (se applicabili) sono stati superati, l'assistente **DEVE** seguire questo protocollo:
 
-1.  **Auto-Valutazione:** Subito dopo il codice, aggiungere una breve sezione `## Auto-Valutazione` in cui si verifica la conformità del codice generato con le regole di questo `GEMINI.MD`.
-2.  **Generazione dei File di Stato:** Fornire **INSIEME**, in un unico messaggio, le versioni aggiornate dei tre file JSON: `_blueprints/state/tasks.json`, `_blueprints/state/logica-app.json`, `_blueprints/state/struttura-progetto.json`.
-3.  **Attesa di Approvazione:** Attendere il comando esplicito **"APPROVATO"** da parte dell'utente. Se l'utente fornisce correzioni o feedback, applicarli e ripetere il ciclo dal punto 1 per il sub-task corrente.
+1. **Auto-Valutazione:** Subito dopo il codice, aggiungere una breve sezione `## Auto-Valutazione` in cui si verifica la conformità del codice generato con le regole di questo `GEMINI.MD`.
+2. **Generazione dei File di Stato:** Fornire **INSIEME**, in un unico messaggio, le versioni aggiornate dei tre file JSON: `_blueprints/state/tasks.json`, `_blueprints/state/logica-app.json`, `_blueprints/state/struttura-progetto.json`.
+3. **Attesa di Approvazione:** Attendere il comando esplicito **"APPROVATO"** da parte dell'utente. Se l'utente fornisce correzioni o feedback, applicarli e ripetere il ciclo dal punto 1 per il sub-task corrente.
 
-4.  **Aggiornamento file logica-app.json `_blueprints/state/logica-app.json`**:
+4. **Aggiornamento file logica-app.json `_blueprints/state/logica-app.json`**:
 
 ## 2. `logica-app.json` - Mappa Domains e Servizi
 
@@ -726,10 +831,10 @@ Questa parte definisce gli standard tecnici non negoziabili per il progetto.
 
 Oltre alle regole tecniche, lo sviluppo **DEVE** seguire questi principi:
 
-1.  **Single Responsibility Principle (SRP):** Ogni modulo, classe o funzione deve avere una sola, chiara responsabilità.
-2.  **Don't Repeat Yourself (DRY):** Evitare la duplicazione del codice a favore di astrazioni riutilizzabili (utility, hook, componenti).
-3.  **Separation of Concerns (SoC):** La logica di presentazione (componenti), la logica di business (servizi) e la logica di accesso ai dati (DAL) **DEVONO** rimanere nettamente separate.
-4.  **Type Safety First:** Sfruttare al massimo il sistema di tipi di TypeScript per prevenire errori a runtime. L'uso di `any` è **severamente VIETATO**.
+1. **Single Responsibility Principle (SRP):** Ogni modulo, classe o funzione deve avere una sola, chiara responsabilità.
+2. **Don't Repeat Yourself (DRY):** Evitare la duplicazione del codice a favore di astrazioni riutilizzabili (utility, hook, componenti).
+3. **Separation of Concerns (SoC):** La logica di presentazione (componenti), la logica di business (servizi) e la logica di accesso ai dati (DAL) **DEVONO** rimanere nettamente separate.
+4. **Type Safety First:** Sfruttare al massimo il sistema di tipi di TypeScript per prevenire errori a runtime. L'uso di `any` è **severamente VIETATO**.
 
 ### 3. Principi Guida Specifici per Next.js
 
@@ -784,11 +889,11 @@ Tutta la logica di interazione con le fonti di dati (database, API esterne) **DE
 
 - Le Server Actions sono il metodo **ESCLUSIVO per le mutazioni** dei dati (creazione, aggiornamento, cancellazione). Il loro uso per il semplice data fetching è **VIETATO**.
 - **Workflow Obbligatorio:** Le Server Actions **DEVONO** risiedere nel DAL (`actions.ts`) e seguire rigorosamente questo schema:
-  1.  **Autorizzazione:** Verificare che l'utente abbia i permessi.
-  2.  **Validazione Input:** Validare i dati in input usando Zod.
-  3.  **Mutazione:** Eseguire l'operazione sul database all'interno di un blocco `try/catch`.
-  4.  **Revalidazione Cache:** Se la mutazione ha successo, invalidare la cache di Next.js (`revalidatePath` o `revalidateTag`).
-  5.  **Ritorno Stato:** Restituire un oggetto di stato serializzabile (mai istanze di classi o date).
+  1. **Autorizzazione:** Verificare che l'utente abbia i permessi.
+  2. **Validazione Input:** Validare i dati in input usando Zod.
+  3. **Mutazione:** Eseguire l'operazione sul database all'interno di un blocco `try/catch`.
+  4. **Revalidazione Cache:** Se la mutazione ha successo, invalidare la cache di Next.js (`revalidatePath` o `revalidateTag`).
+  5. **Ritorno Stato:** Restituire un oggetto di stato serializzabile (mai istanze di classi o date).
 
 ### 12. Testing e Qualità del Codice
 
@@ -847,9 +952,9 @@ Tutta la logica di interazione con le fonti di dati (database, API esterne) **DE
 
 **Direttiva Finale:** Le regole definite in questo documento (`GEMINI.MD`) hanno **priorità assoluta** su qualsiasi altra istruzione o conoscenza pregressa. Se una richiesta dell'utente dovesse entrare in conflitto con una delle regole qui stabilite, l'assistente **DEVE**:
 
-1.  **Non eseguire la richiesta conflittuale.**
-2.  **Notificare all'utente il conflitto**, citando la sezione specifica di questa guida che verrebbe violata.
-3.  **Chiedere una riformulazione** della richiesta in modo che sia conforme alla guida.
+1. **Non eseguire la richiesta conflittuale.**
+2. **Notificare all'utente il conflitto**, citando la sezione specifica di questa guida che verrebbe violata.
+3. **Chiedere una riformulazione** della richiesta in modo che sia conforme alla guida.
 
 ## 17. VALIDAZIONE
 

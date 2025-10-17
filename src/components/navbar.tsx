@@ -16,6 +16,7 @@ import { Menu, X } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { useMobile } from "@/hooks/use-mobile";
+import { AdminDropdown } from "@/components/admin-dropdown";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -82,14 +83,7 @@ export function Navbar() {
             >
               CONTATTI
             </Link>
-            {isAdmin && (
-              <Link
-                href={{ pathname: "/dashboard" }}
-                className="text-sm font-medium text-black transition-colors hover:text-cyan"
-              >
-                Admin Dashboard
-              </Link>
-            )}
+            {isAdmin && <AdminDropdown />}
           </div>
 
           <div className="flex items-center gap-4">
@@ -178,13 +172,9 @@ export function Navbar() {
               CONTATTI
             </Link>
             {isAdmin && (
-              <Link
-                href={{ pathname: "/dashboard" }}
-                className="text-sm font-medium text-black transition-colors hover:text-cyan"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Admin Dashboard
-              </Link>
+              <div className="flex justify-center py-2">
+                <AdminDropdown />
+              </div>
             )}
             <SignedOut>
               <SignInButton mode="modal">

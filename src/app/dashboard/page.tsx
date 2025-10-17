@@ -84,7 +84,7 @@ export default async function AdminPage() {
   ];
 
   return (
-    <div>
+    <div className="dashboard-container">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
@@ -112,7 +112,8 @@ export default async function AdminPage() {
               <h2 className="ml-4 text-xl font-semibold">Gestione Utenti</h2>
             </div>
             <p className="mt-4 text-gray-600">
-              Visualizza e gestisci tutti gli utenti registrati sulla piattaforma.
+              Visualizza e gestisci tutti gli utenti registrati sulla
+              piattaforma.
             </p>
           </Link>
 
@@ -139,7 +140,9 @@ export default async function AdminPage() {
 
         {/* KPI Section */}
         <div className="mb-8">
-          <h2 className="mb-4 text-2xl font-semibold">Indicatori Chiave (KPI)</h2>
+          <h2 className="mb-4 text-2xl font-semibold">
+            Indicatori Chiave (KPI)
+          </h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {mockKpiData.map((kpi) => (
               <div

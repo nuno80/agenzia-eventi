@@ -1,0 +1,124 @@
+{
+  "appVersion": "1.0.0",
+  "lastUpdated": "2025-10-17T20:45:00Z",
+  "domains": {
+    "authentication": {
+      "description": "Gestione autenticazione utenti, sessioni, permessi",
+      "provider": "Clerk",
+      "status": "active",
+      "files": ["src/middleware.tsx", "src/app/(auth)/layout.tsx"],
+      "services": ["clerk-session", "role-authorization"],
+      "dependencies": []
+    },
+    "events": {
+      "description": "Creazione, gestione, pubblicazione di eventi",
+      "status": "active",
+      "files": ["src/actions/event-actions.ts", "src/app/admin/events/page.tsx", "src/app/admin/events/create/page.tsx", "src/app/admin/events/[id]/page.tsx", "src/components/events/create-event-form.tsx"],
+      "services": ["event.dal", "event.validation", "event.cache"],
+      "dependencies": ["authentication"],
+      "dbTables": ["events", "event_admins", "event_budgets", "event_announcements", "sessions", "participants", "travel_reimbursements"]
+    },
+    "participants": {
+      "description": "Check-in, gestione partecipanti, liste di attesa",
+      "status": "planned",
+      "files": ["src/actions/event-actions.ts"],
+      "services": ["participant.dal", "participant.validation"],
+      "dependencies": ["events", "authentication"],
+      "dbTables": ["participants", "participant_history"]
+    },
+    "reporting": {
+      "description": "Dashboard analytics, export dati, report eventi",
+      "status": "planned",
+      "files": ["src/app/admin/page.tsx", "src/app/dashboard/page.tsx"],
+      "services": ["analytics.dal", "report.generator"],
+      "dependencies": ["events", "participants"],
+      "dbTables": ["analytics_snapshots"]
+    },
+    "sessions": {
+      "description": "Gestione programmi sessioni eventi",
+      "status": "planned",
+      "files": ["src/actions/session-actions.ts"],
+      "services": ["session.dal", "session.validation"],
+      "dependencies": ["events", "participants"],
+      "dbTables": ["sessions"]
+    },
+    "users": {
+      "description": "Gestione profili utenti, ruoli, metadati",
+      "status": "active",
+      "files": ["src/app/admin/users/page.tsx", "src/app/api/admin/get-users/route.ts", "src/app/api/admin/set-user-role/route.ts"],
+      "services": ["user.dal", "user.management"],
+      "dependencies": ["authentication"],
+      "dbTables": ["users"]
+    }
+  },
+  "services": {
+    "clerk-session": {
+      "domain": "authentication",
+      "description": "Gestisce sessioni Clerk e current user",
+      "location": "src/middleware.tsx",
+      "type": "utility",
+      "exports": ["currentUser", "requireAdmin", "syncUserWithDatabase"],
+      "dependencies": []
+    },
+    "event.dal": {
+      "domain": "events",
+      "description": "Data Access Layer per events (queries + actions)",
+      "location": "src/actions/event-actions.ts",
+      "type": "dal",
+      "exports": ["getEvents", "getEventById", "getEventDashboardData", "createEvent", "updateEventStatus", "deleteEvent", "duplicateEvent", "getEventSessions", "getEventParticipants", "canUserEditEvent", "canUserViewEvent", "getAdminStats"],
+      "dependencies": ["clerk-session", "database.connection"]
+    },
+    "event.validation": {
+      "domain": "events",
+      "description": "Schemi Zod per validazione event input",
+      "location": "src/lib/schema.ts",
+      "type": "schema",
+      "exports": ["EventFormSchema", "EventSearchSchema", "SessionFormSchema", "EventTypeSchema", "EventStatusSchema", "ParticipantStatusSchema"],
+      "dependencies": []
+    },
+    "database.connection": {
+      "domain": "infrastructure",
+      "description": "Connessioni e operazioni database SQLite",
+      "location": "src/lib/db/index.ts",
+      "type": "service",
+      "exports": ["getDbInstance", "query", "execute", "transaction"],
+      "dependencies": []
+    },
+    "database.migration": {
+      "domain": "infrastructure",
+      "description": "Script di migrazione e reset database",
+      "location": "src/lib/db/migrate.ts, src/lib/db/reset.ts",
+      "type": "service",
+      "exports": ["runFullSchemaMigration", "runDatabaseReset"],
+      "dependencies": ["database.connection"]
+    },
+    "ui.components": {
+      "domain": "ui",
+      "description": "Componenti UI riutilizzabili shadcn",
+      "location": "src/components/ui/",
+      "type": "component",
+      "exports": ["Button", "Card", "CardHeader", "CardContent", "CardTitle", "CardDescription", "Input", "Textarea", "Label", "Select", "Form", "FormItem", "FormControl", "FormLabel", "FormMessage", "Badge", "DropdownMenu"],
+      "dependencies": []
+    },
+    "event.forms": {
+      "domain": "events",
+      "description": "Form componenti per gestione eventi",
+      "location": "src/components/events/",
+      "type": "component",
+      "exports": ["CreateEventForm"],
+      "dependencies": ["ui.components", "event.validation", "event.dal"]
+    },
+    "navigation": {
+      "domain": "ui",
+      "description": "Componenti navigazione e layout",
+      "location": "src/components/navbar.tsx",
+      "type": "component",
+      "exports": ["Navbar"],
+      "dependencies": ["clerk-session"]
+    }
+  },
+  "dataflow": {
+    "description": "Flusso dati end-to-end",
+    "example": "User (Component) → Server Action (event-actions.ts) → DAL (db.query) → Database (events table) → Cache Invalidation → UI Update"
+  }
+}

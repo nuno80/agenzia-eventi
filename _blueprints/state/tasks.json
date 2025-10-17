@@ -1,0 +1,176 @@
+{
+  "projectName": "Event Manager App",
+  "lastUpdated": "2025-10-17T20:45:00Z",
+  "tasks": [
+    {
+      "id": "FEAT-001",
+      "title": "Setup Dashboard Admin Shadcn",
+      "description": "Creare dashboard admin accessibile solo agli admin con componenti shadcn/ui",
+      "status": "completed",
+      "priority": "high",
+      "estimatedHours": 6,
+      "dependencies": [],
+      "assignedTo": "lead-developer",
+      "subtasks": [
+        {
+          "id": "FEAT-001-1",
+          "title": "Analisi middleware Clerk esistente",
+          "status": "completed",
+          "estimatedHours": 1
+        },
+        {
+          "id": "FEAT-001-2",
+          "title": "Installare componenti shadcn (card, table)",
+          "status": "completed",
+          "estimatedHours": 1
+        },
+        {
+          "id": "FEAT-001-3",
+          "title": "Creare pagina dashboard con layout shadcn",
+          "status": "completed",
+          "estimatedHours": 2
+        },
+        {
+          "id": "FEAT-001-4",
+          "title": "Debug problemi autenticazione middleware vs currentUser",
+          "status": "completed",
+          "estimatedHours": 1
+        },
+        {
+          "id": "FEAT-001-5",
+          "title": "Integrare Navbar nella dashboard",
+          "status": "completed",
+          "estimatedHours": 1
+        }
+      ],
+      "completedAt": "2025-10-17T19:30:00Z"
+    },
+    {
+      "id": "FEAT-002",
+      "title": "Implementazione Sistema Gestione Eventi",
+      "description": "Creare sistema completo per creazione, gestione e configurazione eventi",
+      "status": "in_progress",
+      "priority": "high",
+      "estimatedHours": 40,
+      "dependencies": ["FEAT-001"],
+      "assignedTo": "lead-developer",
+      "subtasks": [
+        {
+          "id": "FEAT-002-1",
+          "title": "Setup Database Schema per eventi",
+          "description": "Definire tabelle events, sessions, participants secondo database/schema.sql",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3,
+          "dependencies": []
+        },
+        {
+          "id": "FEAT-002-2",
+          "title": "Implementare schema di validazione Zod",
+          "description": "Creare src/lib/schema.ts con definizioni per Event, Session, Form validation",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": []
+        },
+        {
+          "id": "FEAT-002-3",
+          "title": "Creare Server Actions per eventi",
+          "description": "Implementare src/actions/eventActions.ts con createEvent, getEvents, getEventDashboardData",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 6,
+          "dependencies": ["FEAT-002-1", "FEAT-002-2"]
+        },
+        {
+          "id": "FEAT-002-4",
+          "title": "Implementare pagina riepilogo eventi admin",
+          "description": "Creare src/app/admin/events/page.tsx con EventList component e gestione empty state",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 4,
+          "dependencies": ["FEAT-002-1", "FEAT-002-2", "FEAT-002-3"],
+          "completedAt": "2025-10-17T20:45:00Z"
+        },
+        {
+          "id": "FEAT-002-5",
+          "title": "Creare componenti UI per eventi",
+          "description": "Implementare EventCard, EventList, CreateEventButton components shadcn",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 5,
+          "dependencies": ["FEAT-002-4"],
+          "completedAt": "2025-10-17T20:45:00Z"
+        },
+        {
+          "id": "FEAT-002-6",
+          "title": "Implementare wizard creazione evento",
+          "description": "Creare wizard multi-step per creazione eventi con validation e redirect",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 6,
+          "dependencies": ["FEAT-002-3"],
+          "completedAt": "2025-10-17T20:45:00Z"
+        },
+        {
+          "id": "FEAT-002-7",
+          "title": "Sviluppare dashboard evento modulare",
+          "description": "Implementare dashboard dettaglio evento con StatusCard per Programma, Relatori, Partecipanti",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 5,
+          "dependencies": ["FEAT-002-1", "FEAT-002-2", "FEAT-002-3"]
+        },
+        {
+          "id": "FEAT-002-8",
+          "title": "Gestione programma sessioni",
+          "description": "Creare sistema per gestione sessioni evento con conflict detection",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 5,
+          "dependencies": ["FEAT-002-1", "FEAT-002-2", "FEAT-002-3"]
+        },
+        {
+          "id": "FEAT-002-9",
+          "title": "Testing e QA completa sistema eventi",
+          "description": "Test end-to-end di tutti i workflow per gestione eventi",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 4,
+          "dependencies": ["FEAT-002-1", "FEAT-002-2", "FEAT-002-3", "FEAT-002-4", "FEAT-002-5", "FEAT-002-6", "FEAT-002-7", "FEAT-002-8"]
+        }
+      ],
+      "progress": {
+        "completedSubtasks": 6,
+        "totalSubtasks": 9,
+        "completionPercentage": 67
+      },
+      "notes": "Core MVC events system implemented - database schema, validation, server actions, admin pages, creation form working. Fixed Clerk currentUser vs auth issues and foreign key constraints. Still need detailed event pages, session management, and testing.",
+      "technicalRequirements": [
+        "Next.js 15 App Router",
+        "Shadcn/UI components",
+        "BetterSQLite3 database",
+        "Clerk authentication",
+        "TypeScript strict typing",
+        "Zod validation",
+        "Server Actions pattern"
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "MVP Core Dashboard & Events",
+      "description": "Dashboard admin funzionante con creazione eventi base",
+      "targetDate": "2025-10-24",
+      "requiredTasks": ["FEAT-001", "FEAT-002"],
+      "status": "in_progress"
+    }
+  ],
+  "blockingIssues": [],
+  "currentSprint": "1",
+  "teamVelocity": {
+    "averagePointsPerSprint": 25,
+    "lastUpdated": "2025-10-17T19:30:00Z"
+  }
+}

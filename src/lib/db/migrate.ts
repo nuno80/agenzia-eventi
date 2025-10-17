@@ -1,50 +1,52 @@
-// src/db/migrate.ts
-// Assicurati che l'alias @ funzioni o usa '../lib/db'
+import Database from "better-sqlite3";
+import fs from "fs";
 import path from "path";
 
-import { closeDbConnection, db } from "@/lib/db";
-
-import { applySchemaToDb } from "./utils";
-
-// Assicurati che il percorso a utils.ts sia corretto
+// Configurazione del database
+const dbPath = path.join(process.cwd(), "database", "starter_default.db");
+const schemaPath = path.join(process.cwd(), "database", "schema.sql");
 
 async function runFullSchemaMigration() {
-  const schemaPath = path.join(process.cwd(), "database", "schema.sql");
   console.log(
     "[Migrate Script] Running full schema application from database/schema.sql..."
   );
 
   try {
-    if (!db || !db.open) {
-      console.error(
-        "[Migrate Script] Database connection not found or not open. This script relies on a connection being established by importing from @/lib/db. Exiting."
-      );
-      process.exit(1); // Esce se la connessione DB non è valida
+    // Assicurati che il database esista
+    if (!fs.existsSync(dbPath)) {
+      console.log("[Migrate Script] Database file does not exist, creating...");
+      fs.mkdirSync(path.dirname(dbPath), { recursive: true });
     }
 
-    applySchemaToDb(db, schemaPath);
-    console.log(
-      "[Migrate Script] Schema application script finished successfully."
-    );
-  } catch (e: unknown) {
-    // Blocco catch inizia qui
+    // Connettiti al database
+    const db = new Database(dbPath);
+
+    // Leggi e applica lo schema
+    if (fs.existsSync(schemaPath)) {
+      const schema = fs.readFileSync(schemaPath, "utf8");
+      console.log("[Migrate Script] Applying schema to database...");
+      db.exec(schema);
+      
+      console.log("[Migrate Script] Schema applied successfully!");
+      
+      // Verifica le tabelle create
+      const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+      console.log("[Migrate Script] Tables created:", tables.map((row: any) => row.name));
+      
+    } else {
+      console.error("[Migrate Script] Schema file not found:", schemaPath);
+      process.exit(1);
+    }
+
+    db.close();
+    console.log("[Migrate Script] Database connection closed.");
+    
+  } catch (error) {
     console.error(
       "[Migrate Script] Script failed:",
-      e instanceof Error ? e.message : String(e)
+      error instanceof Error ? error.message : String(error)
     );
-    // Se vuoi loggare lo stack trace per debug più approfondito:
-    // if (e instanceof Error && e.stack) {
-    //   console.error("[Migrate Script] Stack trace:", e.stack);
-    // }
-    process.exit(1); // Esci con codice di errore
-  } finally {
-    // Blocco finally inizia qui
-    // Chiudi la connessione dopo l'esecuzione dello script, sia in caso di successo che di errore
-    if (db && db.open) {
-      console.log("[Migrate Script] Closing database connection.");
-      closeDbConnection();
-    }
-    console.log("[Migrate Script] Script execution finished.");
+    process.exit(1);
   }
 }
 

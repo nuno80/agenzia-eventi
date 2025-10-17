@@ -1,114 +1,141 @@
-// src/lib/db/index.ts
-import Database, { type Database as DBType } from "better-sqlite3";
-import fs from "fs";
+import Database from "better-sqlite3";
 import path from "path";
 
-// Dichiarazione per estendere l'oggetto globale in ambiente di sviluppo
-// per mantenere una singola istanza di connessione attraverso Hot Module Replacement (HMR).
-declare global {
-  // eslint-disable-next-line no-var
-  var __db_connection: DBType | undefined;
+// Define DatabaseConnectionError locally
+class DatabaseConnectionError extends Error {
+  constructor(message: string, originalError?: Error) {
+    super(message);
+    this.name = "DatabaseConnectionError";
+    if (originalError) {
+      this.cause = originalError;
+    }
+  }
 }
 
-const projectRoot = process.cwd();
-const dbDir = path.join(projectRoot, "database");
-const dbFileName = "starter_default.db"; // Nome del file database di default
-const dbPath = path.join(dbDir, dbFileName);
 
-/**
- * Inizializza e restituisce una connessione al database SQLite.
- * Crea la directory del database se non esiste.
- * Crea il file del database se non esiste.
- * Abilita la modalità WAL per performance migliori.
- */
-function initializeDatabaseConnection(): DBType {
-  console.log(
-    "[DB Connection] Attempting to initialize database connection..."
-  );
 
-  // Assicura che la directory del database esista
-  if (!fs.existsSync(dbDir)) {
+// Configurazione del database
+const dbPath = path.join(
+  process.cwd().replace("src", ""),
+  "database",
+  "starter_default.db"
+);
+const maxConnections = 20;
+
+// Connection singleton per development
+let db: Database.Connection | null;
+
+// Factory per ottenere la connessione dal database
+export function getDbConnection(): Database.Connection {
+  if (!db) {
+    db = createDbConnection();
+  }
+  return db;
+}
+
+// Creazione della connessione al database
+function createDbConnection(): Database.Connection {
+  try {
+    const db = new Database(dbPath);
+
+    // Abilita WAL per performance e concorrenza
+    db.pragma('journal_mode = WAL');
+    db.pragma('synchronous = OFF');
+
+    // Configura limite connessioni per evitare errori di too_many connections
+    db.maxConnections = maxConnections;
+
+    return db;
+  } catch (error) {
+    console.error("❌ Database connection failed:", error);
+    throw new DatabaseConnectionError(
+      "Impossibile connettersi al database:",
+      error.message
+    );
+  }
+}
+
+// Funzione per chiudere la connessione (per test/teardown)
+export function closeDbConnection(): void {
+  if (db) {
+    db.close();
+    db = null;
+  }
+}
+
+// Database driver class
+class DatabaseDriver {
+  private database: Database.Database;
+
+  constructor() {
+    this.database = createDbConnection();
+  }
+
+  // Esegui query che ritorna risultati
+  query(sql: string, params?: any[]): any[] {
     try {
-      fs.mkdirSync(dbDir, { recursive: true });
-      console.log(`[DB Connection] Created database directory: ${dbDir}`);
+      const stmt = this.database.prepare(sql);
+      const result = params ? stmt.all(...params) : stmt.all();
+      return result;
     } catch (error) {
-      console.error(
-        `[DB Connection] CRITICAL: Failed to create database directory ${dbDir}:`,
-        error
-      );
-      // Se non possiamo creare la directory, è un errore fatale per il DB.
-      throw new Error(`Failed to create database directory: ${error}`);
+      console.error("❌ Query failed:", { sql, params, error });
+      throw new Error(`Database query failed: ${error.message}`);
     }
   }
 
-  let instance: DBType;
-  try {
-    // better-sqlite3 crea il file del database se non esiste al momento della connessione.
-    instance = new Database(dbPath, { timeout: 10000 }); // Timeout di 10s per operazioni lockate
-    instance.pragma("journal_mode = WAL"); // Abilita Write-Ahead Logging
-    console.log(
-      `[DB Connection] Connection to database at "${dbPath}" established. WAL mode enabled.`
-    );
-  } catch (error) {
-    console.error(
-      `[DB Connection] CRITICAL: Failed to connect to SQLite database at "${dbPath}":`,
-      error
-    );
-    throw new Error(
-      `Failed to initialize SQLite database connection: ${error}`
-    );
+  // Esegui comando che non ritorna risultati (INSERT, UPDATE, DELETE)
+  execute(sql: string, params?: any[]): Database.RunResult {
+    try {
+      const stmt = this.database.prepare(sql);
+      const result = params ? stmt.run(...params) : stmt.run();
+      return result;
+    } catch (error) {
+      console.error("❌ Execute failed:", { sql, params, error });
+      throw new Error(`Database execute failed: ${error.message}`);
+    }
   }
-  return instance;
+
+  // Transazione
+  transaction<T>(fn: () => T): T {
+    const transaction = this.database.transaction(fn);
+    return transaction();
+  }
+
+  // Chiudi connessione
+  close(): void {
+    this.database.close();
+  }
 }
 
-let db: DBType;
+// Singleton instance - persiste tra restart server
+let dbInstance: DatabaseDriver | null = null;
 
-// Gestione Singleton della connessione DB
-if (process.env.NODE_ENV === "production") {
-  // In produzione, crea una singola istanza.
-  db = initializeDatabaseConnection();
-} else {
-  // In sviluppo, riusa l'istanza globale per evitare problemi con HMR
-  // che potrebbe rieseguire questo modulo e creare multiple connessioni.
-  if (!global.__db_connection) {
-    console.log(
-      "[DB Connection] Development: Creating new singleton DB connection."
-    );
-    global.__db_connection = initializeDatabaseConnection();
-  } else {
-    console.log(
-      "[DB Connection] Development: Reusing existing singleton DB connection."
-    );
+export function getDbInstance(): DatabaseDriver {
+  if (!dbInstance) {
+    dbInstance = new DatabaseDriver();
   }
-  db = global.__db_connection;
+  return dbInstance;
 }
 
-/**
- * Chiude la connessione al database, se aperta.
- * Gestisce la chiusura sia per l'ambiente di sviluppo che di produzione.
- */
-export const closeDbConnection = () => {
-  let closed = false;
-  if (global.__db_connection && global.__db_connection.open) {
-    console.log("[DB Connection] Closing DEV singleton database connection.");
-    global.__db_connection.close();
-    global.__db_connection = undefined; // Rimuovi dalla cache globale per permettere una nuova inizializzazione
-    closed = true;
-  } else if (db && db.open && process.env.NODE_ENV === "production") {
-    // Questa condizione potrebbe non essere mai raggiunta se db è sempre global.__db_connection in dev
-    // e db è l'istanza diretta in prod. La logica singleton dovrebbe essere più pulita.
-    // Per ora, manteniamo la possibilità di chiudere l'istanza 'db' se è quella di produzione.
-    console.log("[DB Connection] Closing PROD database connection.");
-    db.close(); // 'db' qui sarebbe l'istanza di produzione
-    closed = true;
-  }
 
-  if (closed) {
-    console.log("[DB Connection] Database connection closed.");
-  } else {
-    // console.log('[DB Connection] closeDbConnection called, but no active connection was found or it was already closed.');
-  }
-};
 
-// Esporta l'istanza del database (singleton)
-export { db };
+// Utility per il debugging SQL
+export function logQuery(sql: string): void {
+  console.log("🔍 SQL:", sql);
+}
+
+export function query(sql: string, params?: any[]): any[] {
+  return getDbInstance().query(sql, params);
+}
+
+export function execute(sql: string, params?: any[]): Database.RunResult {
+  return getDbInstance().execute(sql, params);
+}
+
+export function transaction<T>(fn: () => T): T {
+  return getDbInstance().transaction(fn);
+}
+
+export default getDbInstance;
+
+export const databaseDriver = getDbInstance; // Esplicito per evitare conflitti

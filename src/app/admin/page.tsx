@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { currentUser } from "@clerk/nextjs/server";
-import { Activity, BarChart, DollarSign, Users } from "lucide-react";
+import { Activity, BarChart, DollarSign, Users, Calendar } from "lucide-react";
 
 export default async function AdminPage() {
   const user = await currentUser();
@@ -98,7 +98,7 @@ export default async function AdminPage() {
       </div>
 
       {/* Navigation Cards */}
-      <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Link
           href="/admin/users"
           className="rounded-lg border border-gray-200 bg-white p-6 shadow-md transition hover:shadow-lg"
@@ -109,6 +109,19 @@ export default async function AdminPage() {
           </div>
           <p className="mt-4 text-gray-600">
             Visualizza e gestisci tutti gli utenti registrati sulla piattaforma.
+          </p>
+        </Link>
+
+        <Link
+          href="/admin/events"
+          className="rounded-lg border border-gray-200 bg-white p-6 shadow-md transition hover:shadow-lg"
+        >
+          <div className="flex items-center">
+            <Calendar className="h-8 w-8 text-orange-500" />
+            <h2 className="ml-4 text-xl font-semibold">Gestione Eventi</h2>
+          </div>
+          <p className="mt-4 text-gray-600">
+            Crea e gestisci eventi, sessioni e partecipanti.
           </p>
         </Link>
 

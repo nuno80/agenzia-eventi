@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-type AppRole = "admin" | "manager";
+
 
 const isPublicRoute = createRouteMatcher([
   //aggiungi qui la lista aggiornata delle pagine pubbliche
@@ -27,9 +27,7 @@ const isAuthenticatedRoute = createRouteMatcher(["/features(.*)"]);
 //aggiungi qui le pagine accessibili solo agli utenti registrati
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId, sessionClaims } = await auth();
-  
-  
+  const { userId } = await auth();
 
   // Per debug, puoi decommentare le seguenti righe per vedere i log
   //console.log("\n--- CLERK MIDDLEWARE DEBUG ---");
