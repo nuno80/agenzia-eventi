@@ -1,30 +1,17 @@
-import { redirect } from "next/navigation";
-import { currentUser } from "@clerk/nextjs/server";
+"use client";
 
-import AdminUserManagementClient from "./admin-user-management-client";
-import { Navbar } from "@/components/navbar";
+import { useEffect, useState } from "react";
 
-export default async function AdminUserManagement() {
-  // 1. Check autenticazione
-  const user = await currentUser();
-  if (!user) {
-    redirect("/sign-in");
-  }
-
-  // 2. Check ruolo admin - Pattern conforme alla guida
-  const isAdmin = user?.publicMetadata?.role === "admin";
-  if (!isAdmin) {
-    redirect("/no-access");
-  }
-
-  // 3. Passa al client component per gestione interattiva
-  return (
-    <div className="dashboard-container">
-      <Navbar />
-      <AdminUserManagementClient />
-    </div>
-  );
+interface User {
+  id: string;
+  primaryEmailAddress?: { emailAddress: string }; // Adattato alla struttura tipica di Clerk
+  publicMetadata: {
+    role?: string;
+  };
+  // Aggiungi altri campi se necessari dalla tua API
 }
+
+export default function AdminUserManagementClient() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -1,9 +1,9 @@
 {
   "projectName": "Event Manager App",
-  "lastUpdated": "2025-10-17T20:45:00Z",
+  "lastUpdated": "2025-10-19T20:55:00Z",
   "summary": {
-    "totalFiles": 53,
-    "totalLines": 6465,
+    "totalFiles": 55,
+    "totalLines": 8000,
     "byType": {
       "tsx": 34,
       "ts": 19,

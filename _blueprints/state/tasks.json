@@ -1,6 +1,6 @@
 {
   "projectName": "Event Manager App",
-  "lastUpdated": "2025-10-17T20:45:00Z",
+  "lastUpdated": "2025-10-19T20:55:00Z",
   "tasks": [
     {
       "id": "FEAT-001",
@@ -116,10 +116,12 @@
           "id": "FEAT-002-7",
           "title": "Sviluppare dashboard evento modulare",
           "description": "Implementare dashboard dettaglio evento con StatusCard per Programma, Relatori, Partecipanti",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 5,
-          "dependencies": ["FEAT-002-1", "FEAT-002-2", "FEAT-002-3"]
+          "dependencies": ["FEAT-002-1", "FEAT-002-2", "FEAT-002-3"],
+          "completedAt": "2025-10-19T20:55:00Z",
+          "notes": "Dashboard evento modulare completata - StatusCard per programma, relatori, partecipanti, budget integrati. Query database ottimizzate, autorizzazione admin verificata. UI responsive con insights e raccomandazioni."
         },
         {
           "id": "FEAT-002-8",
@@ -141,9 +143,9 @@
         }
       ],
       "progress": {
-        "completedSubtasks": 6,
+        "completedSubtasks": 7,
         "totalSubtasks": 9,
-        "completionPercentage": 67
+        "completionPercentage": 78
       },
       "notes": "Core MVC events system implemented - database schema, validation, server actions, admin pages, creation form working. Fixed Clerk currentUser vs auth issues and foreign key constraints. Still need detailed event pages, session management, and testing.",
       "technicalRequirements": [

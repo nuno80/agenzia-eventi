@@ -1,13 +1,12 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
-
-import { auth } from "@clerk/nextjs/server";
 import { ArrowLeft, Calendar, MapPin, Users, DollarSign } from "lucide-react";
 
+import { auth } from "@clerk/nextjs/server";
 import { EVENT_TYPES, EVENT_STATUSES } from "@/lib/schema";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import CreateEventForm from "@/components/events/create-event-form";
+import { Navbar } from "@/components/navbar";
 
 export default async function CreateEventPage() {
   const { userId } = await auth();
@@ -17,7 +16,9 @@ export default async function CreateEventPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="dashboard-container">
+      <Navbar />
+      <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <div className="mb-4">
           <Button asChild variant="ghost" className="mb-4">
@@ -145,6 +146,7 @@ export default async function CreateEventPage() {
               </div>
             </CardContent>
           </Card>
+        </div>
         </div>
       </div>
     </div>

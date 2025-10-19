@@ -13,7 +13,7 @@
     "events": {
       "description": "Creazione, gestione, pubblicazione di eventi",
       "status": "active",
-      "files": ["src/actions/event-actions.ts", "src/app/admin/events/page.tsx", "src/app/admin/events/create/page.tsx", "src/app/admin/events/[id]/page.tsx", "src/components/events/create-event-form.tsx"],
+      "files": ["src/actions/event-actions.ts", "src/app/admin/events/page.tsx", "src/app/admin/events/create/page.tsx", "src/app/admin/events/[id]/page.tsx", "src/components/events/create-event-form.tsx", "src/components/events/EventDashboard.tsx"],
       "services": ["event.dal", "event.validation", "event.cache"],
       "dependencies": ["authentication"],
       "dbTables": ["events", "event_admins", "event_budgets", "event_announcements", "sessions", "participants", "travel_reimbursements"]

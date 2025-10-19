@@ -8,6 +8,186 @@ import { z } from "zod";
 import { getDbInstance } from "@/lib/db";
 const db = getDbInstance();
 import { EVENT_STATUSES, EventFormData, EventFormSchema } from "@/lib/schema";
+import { isAdminUser } from "@/lib/auth/role-utils";
+
+// --- AZIONE: Recupero dati completi dashboard singolo evento ---
+export async function getEventDashboardData(eventId: string) {
+  // 1. Sicurezza: Autenticazione + Autorizzazione 
+  const user = await currentUser();
+  
+  if (!user) {
+    return null;
+  }
+  
+  // 2. Check autorizzazione admin
+  if (user.publicMetadata?.role !== "admin") {
+    return null;
+  }
+  
+  const { userId } = user;
+
+  try {
+    // Query evento principale
+    const eventQuery = db.query(`
+      SELECT 
+        id,
+        title,
+        description,
+        event_type,
+        location,
+        start_date,
+        end_date,
+        max_participants,
+        status,
+        created_at,
+        updated_at
+      FROM events 
+      WHERE id = ?
+    `, [eventId]);
+
+    if (eventQuery.length === 0) {
+      return null;
+    }
+
+    const event = eventQuery[0];
+
+    // Query statistiche partecipanti
+    const participantStats = db.query(`
+      SELECT 
+        COUNT(*) as total_participants,
+        SUM(CASE WHEN status = 'checked_in' THEN 1 ELSE 0 END) as checked_in,
+        SUM(CASE WHEN status = 'registered' THEN 1 ELSE 0 END) as registered_only
+      FROM participants 
+      WHERE event_id = ?
+    `, [eventId]);
+
+    // Query statistiche sessioni
+    const sessionStats = db.query(`
+      SELECT 
+        COUNT(*) as total_sessions,
+        SUM(CASE WHEN speaker_id IS NOT NULL THEN 1 ELSE 0 END) as confirmed_sessions,
+        SUM(CASE WHEN date(start_time) = date('now') THEN 1 ELSE 0 END) as sessions_today,
+        SUM(CASE WHEN start_time > datetime('now') THEN 1 ELSE 0 END) as upcoming_sessions
+      FROM sessions 
+      WHERE event_id = ?
+    `, [eventId]);
+
+    // Query statistiche relatori (unici)
+    const speakerStats = db.query(`
+      SELECT 
+        COUNT(DISTINCT speaker_id) as total_speakers,
+        COUNT(DISTINCT CASE WHEN speaker_id IS NOT NULL THEN speaker_id END) as confirmed_speakers,
+        COUNT(DISTINCT CASE WHEN date(s.start_time) = date('now') AND s.speaker_id IS NOT NULL THEN s.speaker_id END) as speakers_today
+      FROM sessions s
+      WHERE s.event_id = ?
+    `, [eventId]);
+
+    // Query statistiche budget
+    const budgetStats = db.query(`
+      SELECT 
+        COALESCE(SUM(budgeted_amount), 0) as total_budgeted,
+        COALESCE(SUM(actual_amount), 0) as total_spent
+      FROM event_budgets 
+      WHERE event_id = ?
+    `, [eventId]);
+
+    // Query sessioni dettagli per dashboard
+    const sessionsDetail = db.query(`
+      SELECT 
+        s.id,
+        s.title,
+        s.description,
+        s.start_time,
+        s.end_time,
+        s.room,
+        s.speaker_id,
+        u.first_name || ' ' || u.last_name as speaker_name
+      FROM sessions s
+      LEFT JOIN users u ON s.speaker_id = u.id
+      WHERE s.event_id = ?
+      ORDER BY s.start_time ASC
+    `, [eventId]);
+
+    // Query relatori dettagli per dashboard
+    const speakersDetail = db.query(`
+      SELECT DISTINCT
+        u.id,
+        u.email,
+        u.first_name,
+        u.last_name,
+        COUNT(s.id) as sessions_count,
+        SUM(CASE WHEN s.speaker_id = u.id THEN 1 ELSE 0 END) as confirmed_sessions,
+        COALESCE(SUM(tr.amount), 0) as total_reimbursements
+      FROM users u
+      JOIN sessions s ON u.id = s.speaker_id
+      LEFT JOIN travel_reimbursements tr ON u.id = tr.speaker_id AND tr.event_id = ?
+      WHERE s.event_id = ?
+      GROUP BY u.id, u.email, u.first_name, u.last_name
+      ORDER BY u.first_name, u.last_name
+    `, [eventId, eventId]);
+
+    // Calcolo insights
+    const participantStatsData = participantStats[0];
+    const sessionStatsData = sessionStats[0];
+    const speakerStatsData = speakerStats[0];
+    const budgetStatsData = budgetStats[0];
+
+    const insights = {
+      occupancyRate: event.max_participants ? Math.round((participantStatsData.total_participants || 0) / event.max_participants * 100) : 0,
+      sessionCompletionRate: sessionStatsData.total_sessions ? Math.round((sessionStatsData.confirmed_sessions || 0) / sessionStatsData.total_sessions * 100) : 0,
+      speakerConfirmationRate: speakerStatsData.total_speakers ? Math.round((speakerStatsData.confirmed_speakers || 0) / speakerStatsData.total_speakers * 100) : 0,
+      budgetUtilizationRate: budgetStatsData.total_budgeted ? Math.round((budgetStatsData.total_spent || 0) / budgetStatsData.total_budgeted * 100) : 0
+    };
+
+    // Calcolo status sessioni
+    const now = new Date().toISOString();
+    const sessionsWithStatus = sessionsDetail.map(session => ({
+      ...session,
+      status: session.end_time < now 
+        ? 'completed' 
+        : session.start_time <= now && session.end_time > now
+          ? 'in_progress'
+          : 'scheduled'
+    }));
+
+    return {
+      event: {
+        ...event,
+        start_date: event.start_date,
+        end_date: event.end_date,
+        location: event.location || "Non specificata"
+      },
+      stats: {
+        totalParticipants: participantStatsData.total_participants || 0,
+        checkedInParticipants: participantStatsData.checked_in || 0,
+        registeredOnlyParticipants: participantStatsData.registered_only || 0,
+        totalSessions: sessionStatsData.total_sessions || 0,
+        confirmedSessions: sessionStatsData.confirmed_sessions || 0,
+        sessionsToday: sessionStatsData.sessions_today || 0,
+        upcomingSessions: sessionStatsData.upcoming_sessions || 0,
+        totalSpeakers: speakerStatsData.total_speakers || 0,
+        confirmedSpeakers: speakerStatsData.confirmed_speakers || 0,
+        speakersToday: speakerStatsData.speakers_today || 0,
+        totalBudgeted: budgetStatsData.total_budgeted || 0,
+        totalSpent: budgetStatsData.total_spent || 0,
+        remainingBudget: (budgetStatsData.total_budgeted || 0) - (budgetStatsData.total_spent || 0)
+      },
+      sessions: sessionsWithStatus,
+      speakers: speakersDetail.map(speaker => ({
+        id: speaker.id,
+        name: `${speaker.first_name} ${speaker.last_name}`,
+        email: speaker.email,
+        sessions_count: speaker.sessions_count,
+        confirmed_sessions: speaker.confirmed_sessions,
+        total_travel_reimbursements: speaker.total_reimbursements || 0
+      })),
+      insights
+    };
+  } catch (error) {
+    console.error("Failed to get event dashboard data:", error);
+    return null;
+  }
+}
 
 // Helper function per sincronizzare utenti Clerk con database locale
 async function syncUserWithDatabase(clerkUser: any) {
@@ -194,106 +374,6 @@ export async function getEvents() {
   }
 }
 
-// --- AZIONE: Recupero dati aggregati per la dashboard di un singolo evento ---
-export async function getEventDashboardData(eventId: string) {
-  // 1. Sicurezza: Autenticazione
-  const user = await currentUser();
-  if (!user) {
-    return null;
-  }
-
-  const { userId } = user;
-
-  // 2. Logica di business e accesso ai dati
-  try {
-    const events = db.query(
-      `
-      SELECT 
-        e.*,
-        (
-          SELECT COUNT(*) FROM participants p WHERE p.event_id = e.id AND p.status = 'checked_in'
-        ) as checked_in_count,
-        (
-          SELECT COUNT(*) as participant_total
-          FROM participants p
-          WHERE p.event_id = e.id
-        ) as participant_total,
-        (
-          SELECT COUNT(*) as session_count
-          FROM sessions s
-          WHERE s.event_id = e.id
-        ) as session_count,
-        (
-          SELECT SUM(b.budgeted_amount) as budgeted_total,
-          COUNT(b.id) as budget_items_count
-          FROM event_budgets b
-          WHERE b.event_id = e.id
-        ) as budgeted_total,
-        (
-          SUM(b.actual_amount) as spent_total
-          FROM event_budgets b
-          WHERE b.event_id = e.id
-        ) as spent_total,
-        (
-          SELECT COUNT(*) as announcement_count
-          FROM event_announcements ea
-          WHERE ea.event_id = e.id
-        ) as announcement_count,
-        (
-          SELECT COUNT(*) AS admin_count
-          FROM event_admins ea
-          WHERE ea.event_id = e.id
-        ) as admin_count
-      FROM events e
-      WHERE e.id = ?
-    `,
-      [eventId]
-    );
-
-    const event = events[0];
-
-    // Controlla che l'evento esista
-    if (!event) {
-      return null;
-    }
-
-    // 3. Costruzione dell'oggetto di risposta aggregato
-    const dashboardData = {
-      event: event,
-      stats: {
-        participants: {
-          registered: event.participant_total,
-          total: event.max_participants,
-          checkedIn: event.checked_in_count,
-        },
-        speakers: {
-          confirmed: 0, // TODO: Implementare dopo tabella speakers
-          pending: 0,
-        },
-        sessions: {
-          total: event.session_count,
-          scheduled: 0, // TODO: Calcolare in base a status field
-          completed: 0,
-          cancelled: 0,
-        },
-        budget: {
-          totalBudget: event.budgeted_total || 0,
-          totalSpent: event.spent_total || 0,
-          remaining: (event.budgeted_total || 0) - (event.spent_total || 0),
-        },
-        announcements: event.announcement_count,
-        admins: event.admin_count,
-      },
-    };
-
-    return dashboardData;
-  } catch (error) {
-    console.error("Failed to fetch dashboard data:", error);
-    throw new Error(
-      "Errore del database durante il recupero dei dati della dashboard."
-    );
-  }
-}
 
 // --- AZIONE: Aggiornamento stato evento ---
 export async function updateEventStatus(

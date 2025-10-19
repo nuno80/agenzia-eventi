@@ -4,13 +4,14 @@ import { PlusCircle, Calendar, Users, Clock, DollarSign } from "lucide-react";
 import { getEvents } from "@/actions/event-actions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Navbar } from "@/components/navbar";
 
 export default async function AdminEventsPage() {
   const events = await getEvents();
 
   return (
     <div className="dashboard-container">
-      <div className="container mx-auto px-4 py-8">
+      <Navbar />
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Gestione Eventi</h1>
@@ -169,6 +170,7 @@ export default async function AdminEventsPage() {
           )}
         </CardContent>
       </Card>
+      <div className="container mx-auto px-4 py-8">
       </div>
     </div>
   );

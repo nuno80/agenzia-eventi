@@ -1,14 +1,14 @@
 // src/middleware.ts
-import { NextResponse } from "next/server";
+// WHY: Middleware configurato secondo guida Clerk - page-level protection pattern
+// Delega controllo ruoli alle pagine invece di sessionClaims
 
+import { NextResponse } from "next/server";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-
-
 const isPublicRoute = createRouteMatcher([
-  //aggiungi qui la lista aggiornata delle pagine pubbliche
+  // Rotte pubbliche accessibili senza autenticazione
   "/",
-  "/about",
+  "/about", 
   "/pricing",
   "/devi-autenticarti",
   "/no-access",
@@ -18,26 +18,27 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 const isAdminRoute = createRouteMatcher([
-  //aggiungi qui le pagine accessibili solo agli admin
+  // Rotte admin - delega controllo ruoli alla pagina con currentUser()
   "/admin(.*)",
-  "/dashboard(.*)",
-  "/api/admin/(.*)",
+  "/api/admin/(.*)", // API routes admin
 ]);
-const isAuthenticatedRoute = createRouteMatcher(["/features(.*)"]);
-//aggiungi qui le pagine accessibili solo agli utenti registrati
+
+const isAuthenticatedRoute = createRouteMatcher([
+  // Rotte per utenti autenticati
+  "/dashboard(.*)",
+  "/user-dashboard(.*)",
+  "/features(.*)",
+]);
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
 
-  // Per debug, puoi decommentare le seguenti righe per vedere i log
-  //console.log("\n--- CLERK MIDDLEWARE DEBUG ---");
-  //console.log(`[REQ] ${req.method} ${req.url}`);
-  //console.log(`[AUTH] User ID: ${userId}`);
-
+  // 1. Rotte pubbliche - accesso libero
   if (isPublicRoute(req)) {
     return NextResponse.next();
   }
 
+  // 2. Utente non autenticato su rotte protette - redirect
   if (!userId) {
     if (req.url.startsWith("/api")) {
       return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
@@ -53,17 +54,20 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(signInUrl);
   }
 
-  // Check admin routes - se sessionClaims non ha i metadati, permettiamo passare alla pagina
-  // e la pagina stessa farà il controllo con currentUser() che ha accesso a publicMetadata
+  // 3. Rotte admin - DELEGA controllo ruoli alla pagina
+  // WHY: Segue pattern guida che usa currentUser() invece di sessionClaims
+  // currentUser() ha accesso completo a publicMetadata
   if (isAdminRoute(req)) {
-    // Per semplicità e affidabilità, lasciamo che la pagina stessa faccia il controllo admin
-    // usando currentUser() che ha accesso completo a publicMetadata
+    // La pagina farà il controllo con currentUser() nei server components
     return NextResponse.next();
   }
 
+  // 4. Rotte autenticate - permetti passaggio
   if (isAuthenticatedRoute(req)) {
     return NextResponse.next();
   }
+
+  // 5. Default - permetti passaggio
   return NextResponse.next();
 });
 
