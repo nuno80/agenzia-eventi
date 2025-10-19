@@ -1,6 +1,6 @@
 {
   "projectName": "Event Manager App",
-  "lastUpdated": "2025-10-19T20:55:00Z",
+  "lastUpdated": "2025-10-19T22:30:00Z",
   "tasks": [
     {
       "id": "FEAT-001",
@@ -8,42 +8,37 @@
       "description": "Creare dashboard admin accessibile solo agli admin con componenti shadcn/ui",
       "status": "completed",
       "priority": "high",
-      "estimatedHours": 6,
       "dependencies": [],
       "assignedTo": "lead-developer",
+      "blueprint": "_blueprints/01_MVP Scope & Core Features.md",
+      "completedAt": "2025-10-17T19:30:00Z",
       "subtasks": [
         {
           "id": "FEAT-001-1",
           "title": "Analisi middleware Clerk esistente",
-          "status": "completed",
-          "estimatedHours": 1
+          "status": "completed"
         },
         {
           "id": "FEAT-001-2",
           "title": "Installare componenti shadcn (card, table)",
-          "status": "completed",
-          "estimatedHours": 1
+          "status": "completed"
         },
         {
           "id": "FEAT-001-3",
           "title": "Creare pagina dashboard con layout shadcn",
-          "status": "completed",
-          "estimatedHours": 2
+          "status": "completed"
         },
         {
           "id": "FEAT-001-4",
           "title": "Debug problemi autenticazione middleware vs currentUser",
-          "status": "completed",
-          "estimatedHours": 1
+          "status": "completed"
         },
         {
           "id": "FEAT-001-5",
           "title": "Integrare Navbar nella dashboard",
-          "status": "completed",
-          "estimatedHours": 1
+          "status": "completed"
         }
-      ],
-      "completedAt": "2025-10-17T19:30:00Z"
+      ]
     },
     {
       "id": "FEAT-002",
@@ -51,112 +46,180 @@
       "description": "Creare sistema completo per creazione, gestione e configurazione eventi",
       "status": "in_progress",
       "priority": "high",
-      "estimatedHours": 40,
       "dependencies": ["FEAT-001"],
       "assignedTo": "lead-developer",
+      "blueprint": "_blueprints/04_Code_Implementation_for_Feature_Gestione_e_Configurazione_Eventi.md",
       "subtasks": [
         {
           "id": "FEAT-002-1",
           "title": "Setup Database Schema per eventi",
-          "description": "Definire tabelle events, sessions, participants secondo database/schema.sql",
-          "status": "completed",
-          "priority": "high",
-          "estimatedHours": 3,
-          "dependencies": []
+          "status": "completed"
         },
         {
           "id": "FEAT-002-2",
           "title": "Implementare schema di validazione Zod",
-          "description": "Creare src/lib/schema.ts con definizioni per Event, Session, Form validation",
-          "status": "completed",
-          "priority": "high",
-          "estimatedHours": 4,
-          "dependencies": []
+          "status": "completed"
         },
         {
           "id": "FEAT-002-3",
           "title": "Creare Server Actions per eventi",
-          "description": "Implementare src/actions/eventActions.ts con createEvent, getEvents, getEventDashboardData",
-          "status": "completed",
-          "priority": "high",
-          "estimatedHours": 6,
-          "dependencies": ["FEAT-002-1", "FEAT-002-2"]
+          "status": "completed"
         },
         {
           "id": "FEAT-002-4",
           "title": "Implementare pagina riepilogo eventi admin",
-          "description": "Creare src/app/admin/events/page.tsx con EventList component e gestione empty state",
-          "status": "completed",
-          "priority": "high",
-          "estimatedHours": 4,
-          "dependencies": ["FEAT-002-1", "FEAT-002-2", "FEAT-002-3"],
-          "completedAt": "2025-10-17T20:45:00Z"
+          "status": "completed"
         },
         {
           "id": "FEAT-002-5",
           "title": "Creare componenti UI per eventi",
-          "description": "Implementare EventCard, EventList, CreateEventButton components shadcn",
-          "status": "completed",
-          "priority": "medium",
-          "estimatedHours": 5,
-          "dependencies": ["FEAT-002-4"],
-          "completedAt": "2025-10-17T20:45:00Z"
+          "status": "completed"
         },
         {
           "id": "FEAT-002-6",
           "title": "Implementare wizard creazione evento",
-          "description": "Creare wizard multi-step per creazione eventi con validation e redirect",
-          "status": "completed",
-          "priority": "high",
-          "estimatedHours": 6,
-          "dependencies": ["FEAT-002-3"],
-          "completedAt": "2025-10-17T20:45:00Z"
+          "status": "completed"
         },
         {
           "id": "FEAT-002-7",
           "title": "Sviluppare dashboard evento modulare",
-          "description": "Implementare dashboard dettaglio evento con StatusCard per Programma, Relatori, Partecipanti",
-          "status": "completed",
-          "priority": "medium",
-          "estimatedHours": 5,
-          "dependencies": ["FEAT-002-1", "FEAT-002-2", "FEAT-002-3"],
-          "completedAt": "2025-10-19T20:55:00Z",
-          "notes": "Dashboard evento modulare completata - StatusCard per programma, relatori, partecipanti, budget integrati. Query database ottimizzate, autorizzazione admin verificata. UI responsive con insights e raccomandazioni."
+          "status": "completed"
         },
         {
           "id": "FEAT-002-8",
           "title": "Gestione programma sessioni",
           "description": "Creare sistema per gestione sessioni evento con conflict detection",
           "status": "pending",
-          "priority": "medium",
-          "estimatedHours": 5,
-          "dependencies": ["FEAT-002-1", "FEAT-002-2", "FEAT-002-3"]
+          "priority": "medium"
         },
         {
           "id": "FEAT-002-9",
           "title": "Testing e QA completa sistema eventi",
           "description": "Test end-to-end di tutti i workflow per gestione eventi",
           "status": "pending",
-          "priority": "medium",
-          "estimatedHours": 4,
-          "dependencies": ["FEAT-002-1", "FEAT-002-2", "FEAT-002-3", "FEAT-002-4", "FEAT-002-5", "FEAT-002-6", "FEAT-002-7", "FEAT-002-8"]
+          "priority": "medium"
         }
-      ],
-      "progress": {
-        "completedSubtasks": 7,
-        "totalSubtasks": 9,
-        "completionPercentage": 78
-      },
-      "notes": "Core MVC events system implemented - database schema, validation, server actions, admin pages, creation form working. Fixed Clerk currentUser vs auth issues and foreign key constraints. Still need detailed event pages, session management, and testing.",
-      "technicalRequirements": [
-        "Next.js 15 App Router",
-        "Shadcn/UI components",
-        "BetterSQLite3 database",
-        "Clerk authentication",
-        "TypeScript strict typing",
-        "Zod validation",
-        "Server Actions pattern"
       ]
+    },
+    {
+      "id": "FEAT-003",
+      "title": "Gestione Utenti e Ruoli",
+      "description": "Implementare la gestione di partecipanti e relatori, inclusi inviti, registrazione pubblica, import/export CSV e ruoli specifici.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": ["FEAT-002"],
+      "assignedTo": "lead-developer",
+      "blueprint": "_blueprints/05_Code_Implementation_Generation_Gestione_Utenti_e_Ruoli.md",
+      "subtasks": [
+        {
+          "id": "FEAT-003-1",
+          "title": "Aggiornare Schema DB e Zod per Utenti",
+          "description": "Aggiungere status per partecipanti/relatori e schemi di validazione per inviti e registrazioni.",
+          "status": "pending"
+        },
+        {
+          "id": "FEAT-003-2",
+          "title": "Implementare Server Actions per Partecipanti",
+          "description": "Creare actions per getParticipants, inviteParticipant, importFromCsv, exportToCsv.",
+          "status": "pending"
+        },
+        {
+          "id": "FEAT-003-3",
+          "title": "Sviluppare UI Gestione Partecipanti",
+          "description": "Creare la pagina admin per la gestione dei partecipanti con tabella, filtri e paginazione.",
+          "status": "pending"
+        },
+        {
+          "id": "FEAT-003-4",
+          "title": "Implementare Modale di Importazione CSV",
+          "description": "Creare il modale con upload e polling dello stato del job di importazione.",
+          "status": "pending"
+        },
+        {
+          "id": "FEAT-003-5",
+          "title": "Creare Pagina di Registrazione Pubblica",
+          "description": "Sviluppare la pagina e il form per l'auto-registrazione dei partecipanti a un evento pubblico.",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "FEAT-004",
+      "title": "Interazione e Comunicazione",
+      "description": "Sviluppare il portale pubblico per gli eventi, la bacheca annunci e l'app di check-in con QR code.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": ["FEAT-003"],
+      "assignedTo": "lead-developer",
+      "blueprint": "_blueprints/06_code_implementation_Interazione_e_Comunicazione.md",
+      "subtasks": [
+        {
+          "id": "FEAT-004-1",
+          "title": "Sviluppare Portale Pubblico Eventi",
+          "description": "Creare le pagine server-side per la lista e il dettaglio degli eventi pubblici.",
+          "status": "pending"
+        },
+        {
+          "id": "FEAT-004-2",
+          "title": "Implementare Bacheca Annunci",
+          "description": "Creare le Server Actions e i componenti UI per la gestione e visualizzazione degli annunci.",
+          "status": "pending"
+        },
+        {
+          "id": "FEAT-004-3",
+          "title": "Generazione QR Code per Partecipanti",
+          "description": "Aggiungere la generazione del QR code nel profilo del partecipante.",
+          "status": "pending"
+        },
+        {
+          "id": "FEAT-004-4",
+          "title": "Sviluppare App di Check-in per Staff",
+          "description": "Creare la pagina di scansione QR con feedback in tempo reale per lo staff.",
+          "status": "pending"
+        },
+        {
+          "id": "FEAT-004-5",
+          "title": "Testing End-to-End Flussi di Interazione",
+          "description": "Testare i flussi di registrazione pubblica e check-in.",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "FEAT-005",
+      "title": "Gestione Sponsor",
+      "description": "Catalogazione degli sponsor, tracciamento budget e deliverables.",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": ["FEAT-002"],
+      "blueprint": "_blueprints/01_MVP Scope & Core Features.md"
+    },
+    {
+      "id": "FEAT-006",
+      "title": "Gestione Budget e Servizi",
+      "description": "Tracciamento budget evento e coordinamento fornitori esterni.",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": ["FEAT-002"],
+      "blueprint": "_blueprints/01_MVP Scope & Core Features.md"
+    },
+    {
+      "id": "FEAT-007",
+      "title": "Gestione Viaggi e Rimborsi (Relatori)",
+      "description": "Memorizzazione viaggi e gestione workflow rimborsi per i relatori.",
+      "status": "pending",
+      "priority": "low",
+      "dependencies": ["FEAT-003"],
+      "blueprint": "_blueprints/01_MVP Scope & Core Features.md"
+    },
+    {
+      "id": "FEAT-008",
+      "title": "Questionari Post-Evento",
+      "description": "Sistema per la somministrazione di questionari di feedback.",
+      "status": "pending",
+      "priority": "low",
+      "dependencies": ["FEAT-003"],
+      "blueprint": "_blueprints/01_MVP Scope & Core Features.md"
     }
   ],
   "milestones": [
@@ -167,12 +230,14 @@
       "targetDate": "2025-10-24",
       "requiredTasks": ["FEAT-001", "FEAT-002"],
       "status": "in_progress"
+    },
+    {
+      "id": "M2",
+      "title": "MVP User Management & Interaction",
+      "description": "Gestione completa degli utenti e funzionalità di interazione base (check-in, annunci).",
+      "targetDate": "2025-11-15",
+      "requiredTasks": ["FEAT-003", "FEAT-004"],
+      "status": "pending"
     }
-  ],
-  "blockingIssues": [],
-  "currentSprint": "1",
-  "teamVelocity": {
-    "averagePointsPerSprint": 25,
-    "lastUpdated": "2025-10-17T19:30:00Z"
-  }
+  ]
 }
