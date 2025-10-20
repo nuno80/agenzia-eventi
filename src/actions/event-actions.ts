@@ -5,30 +5,32 @@ import { revalidatePath } from "next/cache";
 import { currentUser } from "@clerk/nextjs/server";
 import { z } from "zod";
 
-import { getDbInstance } from "@/lib/db";
-const db = getDbInstance();
-import { EVENT_STATUSES, EventFormData, EventFormSchema } from "@/lib/schema";
 import { isAdminUser } from "@/lib/auth/role-utils";
+import { getDbInstance } from "@/lib/db";
+import { EVENT_STATUSES, EventFormData, EventFormSchema } from "@/lib/schema";
+
+const db = getDbInstance();
 
 // --- AZIONE: Recupero dati completi dashboard singolo evento ---
 export async function getEventDashboardData(eventId: string) {
-  // 1. Sicurezza: Autenticazione + Autorizzazione 
+  // 1. Sicurezza: Autenticazione + Autorizzazione
   const user = await currentUser();
-  
+
   if (!user) {
     return null;
   }
-  
+
   // 2. Check autorizzazione admin
   if (user.publicMetadata?.role !== "admin") {
     return null;
   }
-  
+
   const { userId } = user;
 
   try {
     // Query evento principale
-    const eventQuery = db.query(`
+    const eventQuery = db.query(
+      `
       SELECT 
         id,
         title,
@@ -43,7 +45,9 @@ export async function getEventDashboardData(eventId: string) {
         updated_at
       FROM events 
       WHERE id = ?
-    `, [eventId]);
+    `,
+      [eventId]
+    );
 
     if (eventQuery.length === 0) {
       return null;
@@ -52,17 +56,21 @@ export async function getEventDashboardData(eventId: string) {
     const event = eventQuery[0];
 
     // Query statistiche partecipanti
-    const participantStats = db.query(`
+    const participantStats = db.query(
+      `
       SELECT 
         COUNT(*) as total_participants,
         SUM(CASE WHEN status = 'checked_in' THEN 1 ELSE 0 END) as checked_in,
         SUM(CASE WHEN status = 'registered' THEN 1 ELSE 0 END) as registered_only
       FROM participants 
       WHERE event_id = ?
-    `, [eventId]);
+    `,
+      [eventId]
+    );
 
     // Query statistiche sessioni
-    const sessionStats = db.query(`
+    const sessionStats = db.query(
+      `
       SELECT 
         COUNT(*) as total_sessions,
         SUM(CASE WHEN speaker_id IS NOT NULL THEN 1 ELSE 0 END) as confirmed_sessions,
@@ -70,29 +78,38 @@ export async function getEventDashboardData(eventId: string) {
         SUM(CASE WHEN start_time > datetime('now') THEN 1 ELSE 0 END) as upcoming_sessions
       FROM sessions 
       WHERE event_id = ?
-    `, [eventId]);
+    `,
+      [eventId]
+    );
 
     // Query statistiche relatori (unici)
-    const speakerStats = db.query(`
+    const speakerStats = db.query(
+      `
       SELECT 
         COUNT(DISTINCT speaker_id) as total_speakers,
         COUNT(DISTINCT CASE WHEN speaker_id IS NOT NULL THEN speaker_id END) as confirmed_speakers,
         COUNT(DISTINCT CASE WHEN date(s.start_time) = date('now') AND s.speaker_id IS NOT NULL THEN s.speaker_id END) as speakers_today
       FROM sessions s
       WHERE s.event_id = ?
-    `, [eventId]);
+    `,
+      [eventId]
+    );
 
     // Query statistiche budget
-    const budgetStats = db.query(`
+    const budgetStats = db.query(
+      `
       SELECT 
         COALESCE(SUM(budgeted_amount), 0) as total_budgeted,
         COALESCE(SUM(actual_amount), 0) as total_spent
       FROM event_budgets 
       WHERE event_id = ?
-    `, [eventId]);
+    `,
+      [eventId]
+    );
 
     // Query sessioni dettagli per dashboard
-    const sessionsDetail = db.query(`
+    const sessionsDetail = db.query(
+      `
       SELECT 
         s.id,
         s.title,
@@ -106,10 +123,13 @@ export async function getEventDashboardData(eventId: string) {
       LEFT JOIN users u ON s.speaker_id = u.id
       WHERE s.event_id = ?
       ORDER BY s.start_time ASC
-    `, [eventId]);
+    `,
+      [eventId]
+    );
 
     // Query relatori dettagli per dashboard
-    const speakersDetail = db.query(`
+    const speakersDetail = db.query(
+      `
       SELECT DISTINCT
         u.id,
         u.email,
@@ -124,7 +144,9 @@ export async function getEventDashboardData(eventId: string) {
       WHERE s.event_id = ?
       GROUP BY u.id, u.email, u.first_name, u.last_name
       ORDER BY u.first_name, u.last_name
-    `, [eventId, eventId]);
+    `,
+      [eventId, eventId]
+    );
 
     // Calcolo insights
     const participantStatsData = participantStats[0];
@@ -133,21 +155,46 @@ export async function getEventDashboardData(eventId: string) {
     const budgetStatsData = budgetStats[0];
 
     const insights = {
-      occupancyRate: event.max_participants ? Math.round((participantStatsData.total_participants || 0) / event.max_participants * 100) : 0,
-      sessionCompletionRate: sessionStatsData.total_sessions ? Math.round((sessionStatsData.confirmed_sessions || 0) / sessionStatsData.total_sessions * 100) : 0,
-      speakerConfirmationRate: speakerStatsData.total_speakers ? Math.round((speakerStatsData.confirmed_speakers || 0) / speakerStatsData.total_speakers * 100) : 0,
-      budgetUtilizationRate: budgetStatsData.total_budgeted ? Math.round((budgetStatsData.total_spent || 0) / budgetStatsData.total_budgeted * 100) : 0
+      occupancyRate: event.max_participants
+        ? Math.round(
+            ((participantStatsData.total_participants || 0) /
+              event.max_participants) *
+              100
+          )
+        : 0,
+      sessionCompletionRate: sessionStatsData.total_sessions
+        ? Math.round(
+            ((sessionStatsData.confirmed_sessions || 0) /
+              sessionStatsData.total_sessions) *
+              100
+          )
+        : 0,
+      speakerConfirmationRate: speakerStatsData.total_speakers
+        ? Math.round(
+            ((speakerStatsData.confirmed_speakers || 0) /
+              speakerStatsData.total_speakers) *
+              100
+          )
+        : 0,
+      budgetUtilizationRate: budgetStatsData.total_budgeted
+        ? Math.round(
+            ((budgetStatsData.total_spent || 0) /
+              budgetStatsData.total_budgeted) *
+              100
+          )
+        : 0,
     };
 
     // Calcolo status sessioni
     const now = new Date().toISOString();
-    const sessionsWithStatus = sessionsDetail.map(session => ({
+    const sessionsWithStatus = sessionsDetail.map((session) => ({
       ...session,
-      status: session.end_time < now 
-        ? 'completed' 
-        : session.start_time <= now && session.end_time > now
-          ? 'in_progress'
-          : 'scheduled'
+      status:
+        session.end_time < now
+          ? "completed"
+          : session.start_time <= now && session.end_time > now
+            ? "in_progress"
+            : "scheduled",
     }));
 
     return {
@@ -155,7 +202,7 @@ export async function getEventDashboardData(eventId: string) {
         ...event,
         start_date: event.start_date,
         end_date: event.end_date,
-        location: event.location || "Non specificata"
+        location: event.location || "Non specificata",
       },
       stats: {
         totalParticipants: participantStatsData.total_participants || 0,
@@ -170,18 +217,20 @@ export async function getEventDashboardData(eventId: string) {
         speakersToday: speakerStatsData.speakers_today || 0,
         totalBudgeted: budgetStatsData.total_budgeted || 0,
         totalSpent: budgetStatsData.total_spent || 0,
-        remainingBudget: (budgetStatsData.total_budgeted || 0) - (budgetStatsData.total_spent || 0)
+        remainingBudget:
+          (budgetStatsData.total_budgeted || 0) -
+          (budgetStatsData.total_spent || 0),
       },
       sessions: sessionsWithStatus,
-      speakers: speakersDetail.map(speaker => ({
+      speakers: speakersDetail.map((speaker) => ({
         id: speaker.id,
         name: `${speaker.first_name} ${speaker.last_name}`,
         email: speaker.email,
         sessions_count: speaker.sessions_count,
         confirmed_sessions: speaker.confirmed_sessions,
-        total_travel_reimbursements: speaker.total_reimbursements || 0
+        total_travel_reimbursements: speaker.total_reimbursements || 0,
       })),
-      insights
+      insights,
     };
   } catch (error) {
     console.error("Failed to get event dashboard data:", error);
@@ -193,25 +242,27 @@ export async function getEventDashboardData(eventId: string) {
 async function syncUserWithDatabase(clerkUser: any) {
   try {
     // Controlla se l'utente esiste già nel database
-    const existingUser = db.query('SELECT id FROM users WHERE id = ?', [clerkUser.id]);
-    
+    const existingUser = db.query("SELECT id FROM users WHERE id = ?", [
+      clerkUser.id,
+    ]);
+
     if (existingUser.length === 0) {
       // Crea l'utente nel database locale
       db.execute(
-        'INSERT INTO users (id, email, first_name, last_name, role) VALUES (?, ?, ?, ?, ?)',
+        "INSERT INTO users (id, email, first_name, last_name, role) VALUES (?, ?, ?, ?, ?)",
         [
           clerkUser.id,
-          clerkUser.emailAddresses[0]?.emailAddress || '',
-          clerkUser.firstName || '',
-          clerkUser.lastName || '',
-          clerkUser.publicMetadata?.role || 'user'
+          clerkUser.emailAddresses[0]?.emailAddress || "",
+          clerkUser.firstName || "",
+          clerkUser.lastName || "",
+          clerkUser.publicMetadata?.role || "user",
         ]
       );
-      console.log('✅ Utente sincronizzato con database:', clerkUser.id);
+      console.log("✅ Utente sincronizzato con database:", clerkUser.id);
     }
   } catch (error) {
-    console.error('❌ Errore sincronizzazione utente:', error);
-    throw new Error('Impossibile sincronizzare l\'utente con il database');
+    console.error("❌ Errore sincronizzazione utente:", error);
+    throw new Error("Impossibile sincronizzare l'utente con il database");
   }
 }
 
@@ -373,7 +424,6 @@ export async function getEvents() {
     throw new Error("Impossibile recuperare gli eventi dal database.");
   }
 }
-
 
 // --- AZIONE: Aggiornamento stato evento ---
 export async function updateEventStatus(

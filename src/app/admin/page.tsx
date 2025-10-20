@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { currentUser } from "@clerk/nextjs/server";
-import { Activity, BarChart, DollarSign, Users, Calendar } from "lucide-react";
+import { Activity, BarChart, Calendar, DollarSign, Users } from "lucide-react";
 
 export default async function AdminPage() {
   const user = await currentUser();

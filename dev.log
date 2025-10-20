@@ -1,0 +1,25 @@
+
+> my-new-app@0.1.0 dev /home/nuno/programmazione/agenzia-eventi
+> next dev
+
+   ▲ Next.js 15.2.3
+   - Local:        http://localhost:3000
+   - Network:      http://10.255.255.254:3000
+   - Environments: .env.local
+   - Experiments (use with caution):
+     ✓ typedRoutes
+
+ ✓ Starting...
+ ✓ Ready in 1452ms
+ ○ Compiling /middleware ...
+ ✓ Compiled /middleware in 524ms (217 modules)
+ ○ Compiling /test-program-simple/3 ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (123kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ✓ Compiled /test-program-simple/3 in 3.2s (1080 modules)
+ GET /test-program-simple/3 200 in 3435ms
+ ✓ Compiled in 359ms (428 modules)
+ GET /test-program-simple/3 200 in 23ms
+ ✓ Compiled in 364ms (428 modules)
+ ○ Compiling /debug-roles ...
+ ✓ Compiled /debug-roles in 779ms (1063 modules)
+ GET /debug-roles 200 in 925ms

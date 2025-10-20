@@ -1,25 +1,30 @@
 // src/middleware.ts
 // WHY: Middleware configurato secondo guida Clerk - page-level protection pattern
 // Delega controllo ruoli alle pagine invece di sessionClaims
-
 import { NextResponse } from "next/server";
+
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 const isPublicRoute = createRouteMatcher([
   // Rotte pubbliche accessibili senza autenticazione
   "/",
-  "/about", 
+  "/about",
   "/pricing",
   "/devi-autenticarti",
   "/no-access",
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/webhooks(.*)",
+  "/debug-db(.*)",
+  "/api/test-db(.*)",
+  "/debug-roles(.*)",
+  "/test-program(.*)",
+  "/test-program-simple(.*)",
 ]);
 
 const isAdminRoute = createRouteMatcher([
   // Rotte admin - delega controllo ruoli alla pagina con currentUser()
-  "/admin(.*)",
+  "/admin", // Solo la pagina principale admin, non le subroute
   "/api/admin/(.*)", // API routes admin
 ]);
 

@@ -12,8 +12,6 @@ class DatabaseConnectionError extends Error {
   }
 }
 
-
-
 // Configurazione del database
 const dbPath = path.join(
   process.cwd().replace("src", ""),
@@ -39,8 +37,8 @@ function createDbConnection(): Database.Connection {
     const db = new Database(dbPath);
 
     // Abilita WAL per performance e concorrenza
-    db.pragma('journal_mode = WAL');
-    db.pragma('synchronous = OFF');
+    db.pragma("journal_mode = WAL");
+    db.pragma("synchronous = OFF");
 
     // Configura limite connessioni per evitare errori di too_many connections
     db.maxConnections = maxConnections;
@@ -116,8 +114,6 @@ export function getDbInstance(): DatabaseDriver {
   }
   return dbInstance;
 }
-
-
 
 // Utility per il debugging SQL
 export function logQuery(sql: string): void {

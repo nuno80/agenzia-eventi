@@ -13,10 +13,10 @@ import {
 } from "@clerk/nextjs";
 import { Menu, X } from "lucide-react";
 
+import { AdminDropdown } from "@/components/admin-dropdown";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { useMobile } from "@/hooks/use-mobile";
-import { AdminDropdown } from "@/components/admin-dropdown";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -54,32 +54,32 @@ export function Navbar() {
             <ModeToggle />
             <Link
               href="/"
-              className="text-sm font-medium text-black transition-colors hover:text-cyan"
+              className="hover:text-primary text-sm font-medium text-gray-900 transition-colors"
             >
               Home
             </Link>
 
             <Link
               href={{ pathname: "/about" }}
-              className="text-sm font-medium text-black transition-colors hover:text-cyan"
+              className="hover:text-primary text-sm font-medium text-gray-900 transition-colors"
             >
               CHI SIAMO
             </Link>
             <Link
               href={{ pathname: "/features" }}
-              className="text-sm font-medium text-black transition-colors hover:text-cyan"
+              className="hover:text-primary text-sm font-medium text-gray-900 transition-colors"
             >
               SERVIZI
             </Link>
             <Link
               href={{ pathname: "/referenze" }}
-              className="text-sm font-medium text-black transition-colors hover:text-cyan"
+              className="hover:text-primary text-sm font-medium text-gray-900 transition-colors"
             >
               REFERENZE
             </Link>
             <Link
               href={{ pathname: "/pricing" }}
-              className="text-sm font-medium text-black transition-colors hover:text-cyan"
+              className="hover:text-primary text-sm font-medium text-gray-900 transition-colors"
             >
               CONTATTI
             </Link>
@@ -138,35 +138,35 @@ export function Navbar() {
           <div className="flex flex-col space-y-4">
             <Link
               href="/"
-              className="text-sm font-medium text-black transition-colors hover:text-cyan"
+              className="hover:text-primary text-sm font-medium text-gray-900 transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Home
             </Link>
             <Link
               href={{ pathname: "/about" }}
-              className="text-sm font-medium text-black transition-colors hover:text-cyan"
+              className="hover:text-primary text-sm font-medium text-gray-900 transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               CHI SIAMO
             </Link>
             <Link
               href={{ pathname: "/features" }}
-              className="text-sm font-medium text-black transition-colors hover:text-cyan"
+              className="hover:text-primary text-sm font-medium text-gray-900 transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               SERVIZI
             </Link>
             <Link
               href={{ pathname: "/referenze" }}
-              className="text-sm font-medium text-black transition-colors hover:text-cyan"
+              className="hover:text-primary text-sm font-medium text-gray-900 transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               REFERENZE
             </Link>
             <Link
               href={{ pathname: "/pricing" }}
-              className="text-sm font-medium text-black transition-colors hover:text-cyan"
+              className="hover:text-primary text-sm font-medium text-gray-900 transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               CONTATTI

@@ -89,7 +89,7 @@
           "id": "FEAT-002-8",
           "title": "Gestione programma sessioni",
           "description": "Creare sistema per gestione sessioni evento con conflict detection",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium"
         },
         {

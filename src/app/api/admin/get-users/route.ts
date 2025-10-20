@@ -1,6 +1,8 @@
 // src/app/api/admin/get-users/route.ts
 import { NextResponse } from "next/server";
+
 import { currentUser } from "@clerk/nextjs/server";
+
 import { getDbInstance } from "@/lib/db";
 
 const db = getDbInstance();
@@ -17,7 +19,7 @@ interface SimplifiedUser {
 export async function GET() {
   // WHY: API route usa pattern corretto secondo guida
   // currentUser() è il modo corretto per accedere a publicMetadata in API routes
-  
+
   const user = await currentUser();
 
   if (!user) {
@@ -65,14 +67,16 @@ export async function GET() {
       ORDER BY created_at DESC
     `);
 
-    console.log(`Query result type: ${typeof usersQuery}, length: ${Array.isArray(usersQuery) ? usersQuery.length : 'not array'}`);
+    console.log(
+      `Query result type: ${typeof usersQuery}, length: ${Array.isArray(usersQuery) ? usersQuery.length : "not array"}`
+    );
 
     const users = usersQuery.map((row: any) => ({
       id: row.id,
       email: row.email,
       firstName: row.first_name, // WHY: SQLite non mappa correttamente gli alias, usa nomi originali
       lastName: row.last_name,
-      role: row.role
+      role: row.role,
     }));
 
     console.log(`Recuperati ${users.length} utenti.`);
@@ -81,7 +85,8 @@ export async function GET() {
     return NextResponse.json({ users });
   } catch (error: unknown) {
     console.error("Errore API nel caricare gli utenti:", error);
-    let errorMessage = "Errore interno del server durante il caricamento degli utenti.";
+    let errorMessage =
+      "Errore interno del server durante il caricamento degli utenti.";
     if (error instanceof Error) {
       errorMessage = error.message;
     }

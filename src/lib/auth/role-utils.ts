@@ -1,8 +1,9 @@
 "use server";
+
 // NOTA: Questo file è server-only. Contiene funzioni helper per gestione ruoli.
+import { redirect } from "next/navigation";
 
 import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 
 export type AppRole = "admin" | "manager" | "user";
 
@@ -15,7 +16,7 @@ export type AppRole = "admin" | "manager" | "user";
 export async function checkRole(requiredRole: AppRole): Promise<boolean> {
   const user = await currentUser();
   const role = user?.publicMetadata?.role as AppRole | undefined;
-  
+
   switch (requiredRole) {
     case "admin":
       return role === "admin";
@@ -41,11 +42,11 @@ export async function getCurrentUserRole(): Promise<AppRole | null> {
  */
 export async function hasMinimumRole(minimumRole: AppRole): Promise<boolean> {
   const role = await getCurrentUserRole();
-  
+
   const hierarchy: AppRole[] = ["user", "manager", "admin"];
   const currentIndex = hierarchy.indexOf(minimumRole);
   const userIndex = role ? hierarchy.indexOf(role) : -1;
-  
+
   return userIndex >= currentIndex;
 }
 
@@ -53,15 +54,17 @@ export async function hasMinimumRole(minimumRole: AppRole): Promise<boolean> {
  * Helper richiede autenticazione e ruolo specifico (redirect automatico)
  * WHY: Simplifica la logica di protezione pagina
  */
-export async function requireAuthAndRole(requiredRole: AppRole = "user"): Promise<void> {
+export async function requireAuthAndRole(
+  requiredRole: AppRole = "user"
+): Promise<void> {
   const user = await currentUser();
-  
+
   // 1. Check autenticazione
   if (!user) {
     redirect("/sign-in");
     return; // TypeScript richiede return dopo redirect
   }
-  
+
   // 2. Check ruolo
   const hasRole = await checkRole(requiredRole);
   if (!hasRole) {
@@ -75,7 +78,7 @@ export async function requireAuthAndRole(requiredRole: AppRole = "user"): Promis
  */
 export async function requireAuth(): Promise<void> {
   const user = await currentUser();
-  
+
   if (!user) {
     redirect("/sign-in");
   }

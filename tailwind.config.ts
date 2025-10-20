@@ -51,7 +51,31 @@ const config: Config = {
   				'5': 'hsl(var(--chart-5))'
   			},
         cyan: {
+          50: '#e0f7ff',
+          500: '#06b6d4',
+          600: '#0891b2',
           DEFAULT: '#00eaff',
+        },
+        primary: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+          950: '#172554',
+        },
+        accent: {
+          cyan: '#06b6d4',
+          blue: '#3b82f6',
+        },
+        gradient: {
+          primary: 'linear-gradient(135deg, #0EA5E9 0%, #6366F1 100%)',
+          secondary: 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%)',
         }
   		},
   		borderRadius: {
@@ -62,5 +86,25 @@ const config: Config = {
   	}
   },
   plugins: [require("tailwindcss-animate")],
+  fontFamily: {
+    sans: ['Inter', 'system-ui', 'sans-serif'],
+    display: ['Inter', 'system-ui', 'sans-serif'],
+  },
+  animation: {
+    'fade-in': 'fadeIn 0.8s ease-out',
+    'slide-up': 'slideUp 0.6s ease-out',
+    'bounce-slow': 'bounce 2s infinite',
+    'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+  },
+  keyframes: {
+    fadeIn: {
+      '0%': { opacity: '0' },
+      '100%': { opacity: '1' },
+    },
+    slideUp: {
+      '0%': { opacity: '0', transform: 'translateY(30px)' },
+      '100%': { opacity: '1', transform: 'translateY(0)' },
+    },
+  },
 };
 export default config;

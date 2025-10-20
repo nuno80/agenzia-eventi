@@ -1,11 +1,21 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Calendar,
+  Clock,
+  DollarSign,
+  FileText,
+  MapPin,
+  Users,
+} from "lucide-react";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { createEvent } from "@/actions/event-actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,6 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -23,12 +34,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-import { createEvent } from "@/actions/event-actions";
-import { EventFormSchema, EVENT_TYPES } from "@/lib/schema";
-import { Calendar, MapPin, Users, DollarSign, Clock, FileText } from "lucide-react";
+import { EVENT_TYPES, EventFormSchema } from "@/lib/schema";
 
 type EventFormData = z.infer<typeof EventFormSchema>;
 
@@ -109,7 +116,10 @@ export default function CreateEventForm() {
                     <Calendar className="h-4 w-4" />
                     Tipo Evento
                   </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Seleziona tipo evento" />
@@ -118,11 +128,17 @@ export default function CreateEventForm() {
                     <SelectContent>
                       {EVENT_TYPES.map((type) => (
                         <SelectItem key={type} value={type}>
-                          {type === 'conference' ? 'Conferenza' :
-                           type === 'workshop' ? 'Workshop' :
-                           type === 'seminar' ? 'Seminario' :
-                           type === 'training' ? 'Formazione' :
-                           type === 'webinar' ? 'Webinar' : type}
+                          {type === "conference"
+                            ? "Conferenza"
+                            : type === "workshop"
+                              ? "Workshop"
+                              : type === "seminar"
+                                ? "Seminario"
+                                : type === "training"
+                                  ? "Formazione"
+                                  : type === "webinar"
+                                    ? "Webinar"
+                                    : type}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -143,10 +159,7 @@ export default function CreateEventForm() {
                     Location
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Dove si terrà l'evento?"
-                      {...field}
-                    />
+                    <Input placeholder="Dove si terrà l'evento?" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -167,7 +180,11 @@ export default function CreateEventForm() {
                     <FormControl>
                       <Input
                         type="datetime-local"
-                        value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ''}
+                        value={
+                          field.value
+                            ? new Date(field.value).toISOString().slice(0, 16)
+                            : ""
+                        }
                         onChange={(e) => {
                           const dateStr = e.target.value;
                           if (dateStr) {
@@ -196,7 +213,11 @@ export default function CreateEventForm() {
                     <FormControl>
                       <Input
                         type="datetime-local"
-                        value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ''}
+                        value={
+                          field.value
+                            ? new Date(field.value).toISOString().slice(0, 16)
+                            : ""
+                        }
                         onChange={(e) => {
                           const dateStr = e.target.value;
                           if (dateStr) {
@@ -288,7 +309,8 @@ export default function CreateEventForm() {
                     />
                   </FormControl>
                   <FormDescription>
-                    Fornisci una descrizione dettagliata per attirare partecipanti.
+                    Fornisci una descrizione dettagliata per attirare
+                    partecipanti.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

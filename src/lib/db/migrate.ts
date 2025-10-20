@@ -26,13 +26,17 @@ async function runFullSchemaMigration() {
       const schema = fs.readFileSync(schemaPath, "utf8");
       console.log("[Migrate Script] Applying schema to database...");
       db.exec(schema);
-      
+
       console.log("[Migrate Script] Schema applied successfully!");
-      
+
       // Verifica le tabelle create
-      const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
-      console.log("[Migrate Script] Tables created:", tables.map((row: any) => row.name));
-      
+      const tables = db
+        .prepare("SELECT name FROM sqlite_master WHERE type='table'")
+        .all();
+      console.log(
+        "[Migrate Script] Tables created:",
+        tables.map((row: any) => row.name)
+      );
     } else {
       console.error("[Migrate Script] Schema file not found:", schemaPath);
       process.exit(1);
@@ -40,7 +44,6 @@ async function runFullSchemaMigration() {
 
     db.close();
     console.log("[Migrate Script] Database connection closed.");
-    
   } catch (error) {
     console.error(
       "[Migrate Script] Script failed:",
