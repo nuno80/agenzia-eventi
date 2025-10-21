@@ -16,17 +16,8 @@ async function getProgramData(eventId: string): Promise<{
   sessions: (Session & { speaker?: User })[];
 }> {
   try {
-    // DEBUG: Log dei parametri
-    console.log("🔍 DEBUG: getProgramData called with eventId:", eventId);
-    console.log("🔍 DEBUG: typeof eventId:", typeof eventId);
-    
     // Converti eventId da stringa a numero per il database (INTEGER)
     const eventIdNum = parseInt(eventId, 10);
-    console.log("🔍 DEBUG: eventIdNum:", eventIdNum, "typeof:", typeof eventIdNum);
-    
-    // DEBUG: Verifica tipo di funzione db
-    console.log("🔍 DEBUG: db type:", typeof db);
-    console.log("🔍 DEBUG: db.query type:", typeof db?.query);
     
     // Recupera l'evento
     const event = db.query(
@@ -37,11 +28,7 @@ async function getProgramData(eventId: string): Promise<{
       [eventIdNum]
     ) as Event[];
 
-    console.log("🔍 DEBUG: Event query result:", event.length, "records");
-    console.log("🔍 DEBUG: First event:", event[0]);
-
     if (!event.length) {
-      console.log("🔍 DEBUG: Event not found, returning null");
       return { event: null, sessions: [] };
     }
 

@@ -1,15 +1,14 @@
 "use client";
 
 import { useTransition } from "react";
-import { CalendarIcon, Clock, MapPin, User, FileText, AlertCircle, CheckCircle2 } from "lucide-react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
+
 import { useForm } from "react-hook-form";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import {
-  createSession,
-} from "@/actions/session-actions";
+
+import { createSession } from "@/actions/session-actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -42,12 +41,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { SessionFormData, SessionFormSchema, Session } from "@/lib/schema";
+import { Separator } from "@/components/ui/separator";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  User,
+  FileText,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
+import { SessionFormData, SessionFormSchema } from "@/lib/schema";
 
 interface SessionFormProps {
   eventId: string;
   onFormSubmit: () => void;
-  onSessionCreated?: (session: Session & { speaker?: any }) => void;
+  onSessionCreated?: (session: Session) => void;
 }
 
 export default function SessionForm({
@@ -71,40 +80,33 @@ export default function SessionForm({
   });
 
   const processForm = async (data: SessionFormData) => {
-    try {
-      await startTransition(async () => {
-        const result = await createSession(eventId, data);
+    startTransition(async () => {
+      const result = await createSession(eventId, data);
 
-        if (result.success) {
-          onFormSubmit();
-          if (onSessionCreated) {
-            // In una implementazione reale, dovresti recuperare la sessione completa dal DB
-            onSessionCreated({
-              id: result.data?.sessionId || Date.now().toString(),
-              ...data,
-            });
-          }
-        } else {
-          // Gestisci l'errore di business logic specifico
-          if (result.errorCode === "SPEAKER_CONFLICT") {
-            form.setError("speakerId", {
-              type: "custom",
-              message: result.error,
-            });
-          } else {
-            form.setError("root", {
-              type: "custom",
-              message: result.error,
-            });
-          }
+      if (result.success) {
+        onFormSubmit();
+        if (onSessionCreated) {
+          // In una implementazione reale, dovresti recuperare la sessione completa dal DB
+          onSessionCreated({
+            id: result.data?.sessionId,
+            ...data,
+          });
         }
-      });
-    } catch (error) {
-      form.setError("root", {
-        type: "custom",
-        message: "Errore inaspettato. Riprova.",
-      });
-    }
+      } else {
+        // Gestisci l'errore di business logic specifico
+        if (result.errorCode === "SPEAKER_CONFLICT") {
+          form.setError("speakerId", {
+            type: "custom",
+            message: result.error,
+          });
+        } else {
+          form.setError("root", {
+            type: "custom",
+            message: result.error,
+          });
+        }
+      }
+    });
   };
 
   // Lista mock di speaker - in una implementazione reale, recupereresti dal DB
@@ -115,18 +117,21 @@ export default function SessionForm({
   ];
 
   return (
-    <div className="w-full space-y-4">
+    <div className="max-w-2xl mx-auto">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(processForm)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(processForm)} className="space-y-6">
           {/* Informazioni Generali Section */}
           <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
                 Informazioni Generali
               </CardTitle>
+              <CardDescription>
+                Inserisci i dettagli principali della sessione
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-4">
               <FormField
                 control={form.control}
                 name="title"
@@ -173,13 +178,16 @@ export default function SessionForm({
 
           {/* Programmazione Section */}
           <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
                 Programmazione
               </CardTitle>
+              <CardDescription>
+                Definisci date e orari della sessione
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -187,7 +195,7 @@ export default function SessionForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="flex items-center gap-2">
-                        <CalendarIcon className="h-4 w-4" />
+                        <Calendar className="h-4 w-4" />
                         Orario Inizio
                         <Badge variant="secondary" className="text-xs">
                           Obbligatorio
@@ -209,7 +217,7 @@ export default function SessionForm({
                                 </span>
                               ) : (
                                 <span className="flex items-center gap-2 text-muted-foreground">
-                                  <CalendarIcon className="h-4 w-4" />
+                                  <Calendar className="h-4 w-4" />
                                   Scegli data e orario...
                                 </span>
                               )}
@@ -217,7 +225,7 @@ export default function SessionForm({
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          <CalendarComponent
+                          <Calendar
                             mode="single"
                             selected={field.value}
                             onSelect={(date) => {
@@ -227,7 +235,7 @@ export default function SessionForm({
                                 field.onChange(newDate);
                               }
                             }}
-                          />
+                            />
                           <div className="border-t p-3">
                             <div className="flex items-center gap-2 mb-2">
                               <Clock className="h-4 w-4" />
@@ -259,7 +267,7 @@ export default function SessionForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="flex items-center gap-2">
-                        <CalendarIcon className="h-4 w-4" />
+                        <Calendar className="h-4 w-4" />
                         Orario Fine
                         <Badge variant="secondary" className="text-xs">
                           Obbligatorio
@@ -281,7 +289,7 @@ export default function SessionForm({
                                 </span>
                               ) : (
                                 <span className="flex items-center gap-2 text-muted-foreground">
-                                  <CalendarIcon className="h-4 w-4" />
+                                  <Calendar className="h-4 w-4" />
                                   Scegli data e orario...
                                 </span>
                               )}
@@ -289,7 +297,7 @@ export default function SessionForm({
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          <CalendarComponent
+                          <Calendar
                             mode="single"
                             selected={field.value}
                             onSelect={(date) => {
@@ -299,7 +307,7 @@ export default function SessionForm({
                                 field.onChange(newDate);
                               }
                             }}
-                          />
+                            />
                           <div className="border-t p-3">
                             <div className="flex items-center gap-2 mb-2">
                               <Clock className="h-4 w-4" />
@@ -330,13 +338,16 @@ export default function SessionForm({
 
           {/* Locazione e Relatori Section */}
           <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
                 Locazione e Relatori
               </CardTitle>
+              <CardDescription>
+                Specifica la sala e assegna un relatore
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -369,7 +380,7 @@ export default function SessionForm({
                         Relatore
                       </FormLabel>
                       <Select
-                        onValueChange={(value) => field.onChange(value === "none" ? "" : value)}
+                        onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
@@ -412,7 +423,7 @@ export default function SessionForm({
           )}
 
           {/* Actions */}
-          <CardFooter className="flex justify-between sticky bottom-0 bg-white border-t py-4">
+          <CardFooter className="flex justify-between">
             <div className="text-sm text-muted-foreground">
               * Campi obbligatori
             </div>

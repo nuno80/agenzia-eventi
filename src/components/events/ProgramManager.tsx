@@ -46,7 +46,7 @@ export default function ProgramManager({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 bg-gray-50 rounded-lg">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="flex items-center gap-2 text-2xl font-semibold text-gray-900">
@@ -65,15 +65,17 @@ export default function ProgramManager({
               Aggiungi Sessione
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
+          <DialogContent className="max-w-4xl h-[90vh] max-h-[900px] bg-white border border-gray-200 shadow-xl overflow-hidden flex flex-col">
+            <DialogHeader className="flex-shrink-0 p-6 pb-0">
               <DialogTitle>Crea una Nuova Sessione</DialogTitle>
             </DialogHeader>
-            <SessionForm
-              eventId={eventId}
-              onFormSubmit={() => setIsModalOpen(false)}
-              onSessionCreated={handleSessionCreated}
-            />
+            <div className="flex-1 overflow-y-auto p-6 pt-2">
+              <SessionForm
+                eventId={eventId}
+                onFormSubmit={() => setIsModalOpen(false)}
+                onSessionCreated={handleSessionCreated}
+              />
+            </div>
           </DialogContent>
         </Dialog>
       </div>

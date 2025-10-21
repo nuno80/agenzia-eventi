@@ -1,6 +1,6 @@
 {
   "appVersion": "1.0.0",
-  "lastUpdated": "2025-10-17T20:45:00Z",
+  "lastUpdated": "2025-10-21T20:00:00Z",
   "domains": {
     "authentication": {
       "description": "Gestione autenticazione utenti, sessioni, permessi",
@@ -13,18 +13,18 @@
     "events": {
       "description": "Creazione, gestione, pubblicazione di eventi",
       "status": "active",
-      "files": ["src/actions/event-actions.ts", "src/app/admin/events/page.tsx", "src/app/admin/events/create/page.tsx", "src/app/admin/events/[id]/page.tsx", "src/components/events/create-event-form.tsx", "src/components/events/EventDashboard.tsx"],
-      "services": ["event.dal", "event.validation", "event.cache"],
+      "files": ["src/actions/event-actions.ts", "src/actions/session-actions.ts", "src/app/admin/events/page.tsx", "src/app/admin/events/create/page.tsx", "src/app/admin/events/[id]/page.tsx", "src/components/events/create-event-form.tsx", "src/components/events/EventDashboard.tsx", "tests/unit/schema/event-schema.test.ts", "tests/integration/event-actions.test.ts", "tests/e2e/event-creation-flow.spec.ts"],
+      "services": ["event.dal", "event.validation", "event.cache", "event.testing"],
       "dependencies": ["authentication"],
       "dbTables": ["events", "event_admins", "event_budgets", "event_announcements", "sessions", "participants", "travel_reimbursements"]
     },
     "participants": {
-      "description": "Check-in, gestione partecipanti, liste di attesa",
-      "status": "planned",
-      "files": ["src/actions/event-actions.ts"],
-      "services": ["participant.dal", "participant.validation"],
+      "description": "Gestione completa partecipanti e relatori, inviti, import/export CSV, registrazioni pubbliche",
+      "status": "active",
+      "files": ["src/actions/participantActions.ts", "src/actions/jobActions.ts", "src/app/admin/events/[id]/participants/page.tsx", "src/components/participants/ParticipantsManager.tsx", "src/components/participants/ParticipantsTable.tsx", "src/components/participants/ImportModal.tsx", "src/components/participants/InviteParticipantForm.tsx", "src/app/events/[id]/register/page.tsx", "src/components/auth/PublicRegistrationForm.tsx"],
+      "services": ["participant.dal", "participant.validation", "participant.import", "job.polling"],
       "dependencies": ["events", "authentication"],
-      "dbTables": ["participants", "participant_history"]
+      "dbTables": ["participants", "event_speakers", "backup_jobs"]
     },
     "reporting": {
       "description": "Dashboard analytics, export dati, report eventi",
@@ -107,6 +107,30 @@
       "type": "component",
       "exports": ["CreateEventForm"],
       "dependencies": ["ui.components", "event.validation", "event.dal"]
+    },
+    "participant.dal": {
+      "domain": "participants",
+      "description": "Data Access Layer per partecipanti e relatori",
+      "location": "src/actions/participantActions.ts",
+      "type": "dal",
+      "exports": ["getParticipants", "inviteParticipant", "importFromCsv", "exportToCsv", "removeParticipant", "updateParticipantStatus", "registerForEvent", "getPublicEvent"],
+      "dependencies": ["clerk-session", "database.connection"]
+    },
+    "job.polling": {
+      "domain": "participants",
+      "description": "Gestione polling stato job di importazione",
+      "location": "src/actions/jobActions.ts",
+      "type": "service",
+      "exports": ["getJobStatus", "getUserJobs", "cleanupOldJobs"],
+      "dependencies": ["database.connection"]
+    },
+    "participant.import": {
+      "domain": "participants",
+      "description": "Modale importazione CSV con upload e progress tracking",
+      "location": "src/components/participants/ImportModal.tsx",
+      "type": "component",
+      "exports": ["ImportModal"],
+      "dependencies": ["ui.components", "react-dropzone", "@tanstack/react-query", "participant.dal"]
     },
     "navigation": {
       "domain": "ui",

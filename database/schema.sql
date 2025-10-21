@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS events (
   max_participants INTEGER,
   price DECIMAL(10,2) DEFAULT 0,
   status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'in_progress', 'completed', 'cancelled', 'postponed')),
+  is_public BOOLEAN DEFAULT FALSE, -- Indica se l'evento è visibile pubblicamente
+  slug TEXT, -- URL-friendly identifier per accesso pubblico
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -36,8 +38,11 @@ CREATE TABLE IF NOT EXISTS participants (
   event_id INTEGER NOT NULL,
   user_id TEXT NOT NULL, -- FK to users.id (Clerk ID)
   registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  status TEXT DEFAULT 'registered' CHECK (status IN ('registered', 'checked_in', 'cancelled')),
+  status TEXT DEFAULT 'registered' CHECK (status IN ('registered', 'checked_in', 'cancelled', 'waitlisted', 'checked_out', 'absent')),
   notes TEXT,
+  qr_token TEXT, -- Token unico per QR code check-in
+  check_in_time DATETIME, -- Timestamp del check-in
+  check_out_time DATETIME, -- Timestamp del check-out
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,

@@ -25,14 +25,19 @@ export type EventType = z.infer<typeof EventTypeSchema>;
 
 // 3. Participant Statuses - Enum per stati partecipanti
 export const PARTICIPANT_STATUSES = [
-  "registered",
-  "checked_in",
-  "checked_out",
-  "cancelled",
-  "no_show",
+  "REGISTERED",
+  "WAITLISTED", 
+  "CHECKED_IN",
+  "CHECKED_OUT",
+  "ABSENT",
 ] as const;
 export const ParticipantStatusSchema = z.enum(PARTICIPANT_STATUSES);
 export type ParticipantStatus = z.infer<typeof ParticipantStatusSchema>;
+
+// 3.1. Speaker Statuses - Enum per stati relatori
+export const SPEAKER_STATUSES = ["INVITED", "CONFIRMED", "DECLINED"] as const;
+export const SpeakerStatusSchema = z.enum(SPEAKER_STATUSES);
+export type SpeakerStatus = z.infer<typeof SpeakerStatusSchema>;
 
 // 4. Session Statuses - Enum per stati sessioni
 export const SESSION_STATUSES = [
@@ -184,8 +189,8 @@ export const SessionFormSchema = z
       .string()
       .max(100, "La sala non può superare 100 caratteri.")
       .optional(),
-    speakerId: z.string().uuid("ID relatore non valido.").optional(),
-    eventId: z.string().uuid("ID evento non valido."),
+    speakerId: z.string().optional(), // Permette stringa vuota o null (nessun relatore)
+    eventId: z.string(), // EventId come stringa (da URL), convertito in numero nel server action
   })
   .refine((data) => {
     if (data.startTime >= data.endTime) {
@@ -202,10 +207,30 @@ export const SessionFormSchema = z
 export type SessionFormData = z.infer<typeof SessionFormSchema>;
 
 // 12. Schema validazione per partecipante
+// 12.1 Schema validazione per invito partecipante/relatore
+export const InviteFormSchema = z.object({
+  email: z.string().email({ message: "Inserisci un indirizzo email valido." }),
+  role: z.enum(["PARTICIPANT", "SPEAKER"]),
+});
+export type InviteFormData = z.infer<typeof InviteFormSchema>;
+
+// 12.2 Schema validazione per registrazione pubblica
+export const PublicRegistrationSchema = z.object({
+  name: z.string().min(2, "Il nome è richiesto."),
+  email: z.string().email("Email non valida."),
+  password: z.string().min(8, "La password deve contenere almeno 8 caratteri."),
+  company: z.string().optional(),
+  terms: z.literal(true, {
+    errorMap: () => ({ message: "Devi accettare i termini e le condizioni." }),
+  }),
+});
+export type PublicRegistrationFormData = z.infer<typeof PublicRegistrationSchema>;
+
+// 12.3 Schema validazione per partecipante (updated default status)
 export const ParticipantFormSchema = z.object({
   eventId: z.string().uuid("ID evento non valido."),
   userId: z.string().uuid("ID utente non valido."),
-  status: ParticipantStatusSchema.default("registered").optional(),
+  status: ParticipantStatusSchema.default("REGISTERED").optional(),
   notes: z
     .string()
     .max(500, "Le note non possono superare 500 caratteri.")
@@ -304,7 +329,42 @@ export const AnalyticsQuerySchema = z.object({
 
 export type AnalyticsQueryParams = z.infer<typeof AnalyticsQuerySchema>;
 
-// 18. Types derivati dal database (eventualmente da generare automaticamente da ORM)
+// 18. Tipi per Job di importazione/esportazione
+export type JobStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED";
+export type Job = {
+  id: string;
+  status: JobStatus;
+  result?: {
+    successCount: number;
+    errorCount: number;
+    errorReportUrl?: string;
+  } | null;
+};
+
+// 18.1 Tipi specifici per partecipanti e relatori
+export type EventParticipant = {
+  id: string;
+  user: {
+    id: string;
+    name: string | null;
+    email: string;
+  };
+  status: ParticipantStatus;
+  registeredAt: Date;
+};
+
+export type EventSpeaker = {
+  id: string;
+  user: {
+    id: string;
+    name: string | null;
+    email: string;
+  };
+  status: SpeakerStatus;
+  bio: string | null;
+};
+
+// 19. Types derivati dal database (eventualmente da generare automaticamente da ORM)
 // Questi tipi rappresentano la struttura dei dati nel database SQLite
 
 export interface User {
@@ -631,12 +691,15 @@ export const Schemas = {
   Reimbursement: ReimbursementFormSchema,
   ParticipantSearch: ParticipantSearchSchema,
   AnalyticsQuery: AnalyticsQuerySchema,
+  InviteForm: InviteFormSchema,
+  PublicRegistration: PublicRegistrationSchema,
 } as const;
 
 export const Enums = {
   EventStatus: EVENT_STATUSES,
   EventType: EVENT_TYPES,
   ParticipantStatus: PARTICIPANT_STATUSES,
+  SpeakerStatus: SPEAKER_STATUSES,
   SessionStatus: SESSION_STATUSES,
   BudgetCategory: BUDGET_CATEGORIES,
   BudgetStatus: BUDGET_STATUSES,

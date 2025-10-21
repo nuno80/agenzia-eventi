@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 
-import { closeDbConnection, db } from "@/lib/db";
+import { closeDbConnection, getDbInstance } from "@/lib/db";
 
 import { createBackup } from "./backup-utils";
 
@@ -56,7 +56,7 @@ async function applyAdHocChanges() {
         "[Apply Changes Script] adhoc_changes.sql is empty or contains only placeholder comments. No changes applied."
       );
       // Chiudi la connessione se è stata aperta solo per questo script
-      if (db && db.open) closeDbConnection();
+      closeDbConnection();
       return; // Esce se non ci sono query da eseguire
     }
   } catch (readError) {
@@ -71,10 +71,12 @@ async function applyAdHocChanges() {
   // 3. Applica le modifiche SQL
   console.log("[Apply Changes Script] Executing SQL from adhoc_changes.sql...");
   try {
+    const dbInstance = getDbInstance();
+    
     // Esegui le query in una transazione per assicurare atomicità
-    db.transaction(() => {
-      db.exec(sqlToExecute);
-    })(); // Chiamata immediata della funzione transazionale
+    dbInstance.transaction(() => {
+      dbInstance.database.exec(sqlToExecute);
+    });
     console.log(
       "[Apply Changes Script] Ad-hoc changes from adhoc_changes.sql applied successfully."
     );
@@ -82,7 +84,7 @@ async function applyAdHocChanges() {
       "[Apply Changes Script] IMPORTANT: If you made structural changes (like ALTER TABLE), please ensure your main `database/schema.sql` is updated to reflect the new desired state for future initializations."
     );
     console.warn(
-      "[Apply Changes Script] Consider clearing or commenting out an_changes.sql after successful execution."
+      "[Apply Changes Script] Consider clearing or commenting out adhoc_changes.sql after successful execution."
     );
   } catch (error) {
     console.error(
@@ -94,10 +96,8 @@ async function applyAdHocChanges() {
     );
     process.exit(1);
   } finally {
-    if (db && db.open) {
-      console.log("[Apply Changes Script] Closing database connection.");
-      closeDbConnection();
-    }
+    console.log("[Apply Changes Script] Closing database connection.");
+    closeDbConnection();
   }
 }
 

@@ -16,3 +16,15 @@
 -- DELETE FROM logs WHERE timestamp < '2023-01-01';
 
 -- Incolla qui le tue query ad-hoc:
+
+-- Aggiungere campi per portale pubblico e QR code (senza UNIQUE constraint)
+ALTER TABLE events ADD COLUMN is_public BOOLEAN DEFAULT FALSE;
+ALTER TABLE events ADD COLUMN slug TEXT;
+
+-- Aggiungere campi per gestione check-in e QR code participants (senza UNIQUE constraint)
+ALTER TABLE participants ADD COLUMN qr_token TEXT;
+ALTER TABLE participants ADD COLUMN check_in_time DATETIME;
+ALTER TABLE participants ADD COLUMN check_out_time DATETIME;
+
+-- Nota: SQLite non supporta l'aggiunta di colonne con constraint UNIQUE
+-- La gestione dell'univocità sarà fatta a livello di applicazione
